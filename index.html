@@ -2,39 +2,55 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Зарплатний калькулятор (Стабільний експорт)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Зарплатний калькулятор</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f7f6; color: #333; padding: 40px; display: flex; justify-content: center; }
-        .calculator-container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 500px; width: 100%; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #f4f7f6; 
+            color: #333; 
+            margin: 0; 
+            padding: 15px; /* Зменшені відступи для екрана смартфона */
+            display: flex; 
+            justify-content: center; 
+        }
+        .calculator-container { 
+            background: white; 
+            padding: 25px 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            width: 100%; /* Розтягуємо контейнер на всю ширину */
+            max-width: 500px; /* Обмеження ширини лише для ПК */
+            box-sizing: border-box; /* Запобігає виходу за межі екрана */
+        }
         
-        h2 { margin-top: 0; font-size: 22px; color: #111; border-bottom: 2px solid #0d6efd; padding-bottom: 10px; }
-        label.main-label { font-weight: 600; font-size: 14px; display: block; margin-top: 20px; margin-bottom: 8px; }
-        input[type="number"] { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #cdd3d8; border-radius: 6px; box-sizing: border-box; font-size: 16px; transition: border-color 0.2s; }
+        h2 { margin-top: 0; font-size: 20px; color: #111; border-bottom: 2px solid #0d6efd; padding-bottom: 10px; }
+        label.main-label { font-weight: 600; font-size: 14px; display: block; margin-top: 15px; margin-bottom: 8px; }
+        input[type="number"] { width: 100%; padding: 14px; margin-bottom: 20px; border: 1px solid #cdd3d8; border-radius: 8px; box-sizing: border-box; font-size: 16px; transition: border-color 0.2s; -webkit-appearance: none; }
         input[type="number"]:focus { border-color: #007bff; outline: none; }
         
-        .checkbox-group { display: flex; align-items: flex-start; margin-bottom: 25px; background: #f8fbff; padding: 15px; border-radius: 6px; border: 1px solid #d8e6f5; }
-        .checkbox-group input { margin-right: 12px; margin-top: 3px; width: 18px; height: 18px; cursor: pointer; }
+        .checkbox-group { display: flex; align-items: flex-start; margin-bottom: 25px; background: #f8fbff; padding: 15px; border-radius: 8px; border: 1px solid #d8e6f5; }
+        .checkbox-group input { margin-right: 12px; margin-top: 2px; width: 22px; height: 22px; cursor: pointer; flex-shrink: 0; }
         .checkbox-group label { font-weight: normal; margin-bottom: 0; cursor: pointer; line-height: 1.4; font-size: 14px; }
-        .checkbox-group small { color: #666; font-size: 12px; }
+        .checkbox-group small { color: #666; font-size: 12px; display: block; margin-top: 4px; }
         
-        button { width: 100%; padding: 14px; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: 600; transition: background-color 0.2s; margin-bottom: 10px; }
+        button { width: 100%; padding: 16px; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: 600; margin-bottom: 10px; -webkit-tap-highlight-color: transparent; }
         .btn-primary { background-color: #0d6efd; }
-        .btn-primary:hover { background-color: #0b5ed7; }
+        .btn-primary:active { background-color: #0b5ed7; transform: scale(0.98); }
         .btn-success { background-color: #198754; display: none; }
-        .btn-success:hover { background-color: #157347; }
         
-        .result { margin-top: 25px; padding: 20px; background-color: #f8f9fa; border-left: 4px solid #198754; border-radius: 0 6px 6px 0; display: none; }
-        .result p { margin: 8px 0; font-size: 15px; }
-        .tax-note { color: #6c757d; font-size: 13px; margin-top: -4px; margin-bottom: 12px; line-height: 1.5; }
+        .result { margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-left: 4px solid #198754; border-radius: 0 8px 8px 0; display: none; }
+        .result p { margin: 8px 0; font-size: 14px; }
+        .tax-note { color: #6c757d; font-size: 12px; margin-top: -4px; margin-bottom: 12px; line-height: 1.5; }
         .highlight { font-weight: 600; color: #dc3545; }
         
-        .total-taxes-box { background-color: #fff3f3; border: 1px solid #f5c2c2; padding: 15px; border-radius: 6px; margin-top: 15px; }
-        .total-taxes-box p { margin: 4px 0; }
+        .total-taxes-box { background-color: #fff3f3; border: 1px solid #f5c2c2; padding: 15px; border-radius: 8px; margin-top: 15px; }
+        .total-taxes-box p { margin: 6px 0; }
 
-        /* Стилі виключно для генерації PDF/Друку */
+        /* Стилі для PDF експорту (Приховуються на екрані) */
         @media print {
             body { background-color: white; padding: 0; align-items: flex-start; }
-            .calculator-container { box-shadow: none; max-width: 100%; padding: 0; }
+            .calculator-container { box-shadow: none; max-width: 100%; width: 100%; padding: 0; border-radius: 0; }
             #controlsArea { display: none !important; }
             input[type="number"] { border: none; background: #f8f9fa; pointer-events: none; }
             .checkbox-group { border: none; background: transparent; padding: 0; margin-bottom: 15px; }
@@ -47,7 +63,7 @@
     <h2>Зарплатний розрахунок (Оффер)</h2>
     
     <label class="main-label" for="netSalary">Бажана сума на руки (Net), грн:</label>
-    <input type="number" id="netSalary" placeholder="Наприклад: 45000">
+    <input type="number" id="netSalary" inputmode="numeric" placeholder="Наприклад: 45000">
 
     <div class="checkbox-group">
         <input type="checkbox" id="isDisability" checked>
@@ -74,11 +90,11 @@
         </p>
         
         <div class="total-taxes-box">
-            <p style="font-weight: 700; color: #b02a37; font-size: 16px;">Всього податків до сплати:</p>
+            <p style="font-weight: 700; color: #b02a37; font-size: 15px;">Всього податків до сплати:</p>
             <p>• З людини (ПДФО + ВЗ): <span class="highlight" id="humanTaxes"></span> грн</p>
             <p>• З компанії (ЄСВ): <span class="highlight" id="companyTaxes"></span> грн</p>
             <p style="font-weight: 600; margin-top: 8px; border-top: 1px dashed #f5c2c2; padding-top: 8px;">
-                Загальна сума податків: <span class="highlight" style="font-size: 17px;" id="allTaxes"></span> грн
+                Загальна сума податків: <span class="highlight" style="font-size: 16px;" id="allTaxes"></span> грн
             </p>
         </div>
     </div>
