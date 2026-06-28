@@ -2,390 +2,127 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ogrant Payroll</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        :root {
-            --bg-color: #eef2f7;
-            --card-bg: #ffffff;
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --success: #059669;
-            --success-hover: #047857;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
-        }
-
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 15px; display: flex; justify-content: center; }
+        /* Стилі, що базуються на перевіреній версії, яка відображається супер */
+        body { font-family: -apple-system, sans-serif; background-color: #f4f7f6; padding: 20px; display: flex; justify-content: center; }
+        .container { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
         
-        #captureArea { width: 100%; max-width: 500px; padding: 0; box-sizing: border-box; }
-        
-        .calculator-container { background: var(--card-bg); padding: 30px 25px; border-radius: 24px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08); width: 100%; box-sizing: border-box; }
-        
-        h2 { font-size: 24px; margin-top: 0; margin-bottom: 20px; color: var(--text-main); text-align: center; }
-        
-        /* Вкладки */
-        .tabs { display: flex; background: #e2e8f0; border-radius: 14px; padding: 5px; margin-bottom: 25px; }
-        .tab-btn { flex: 1; text-align: center; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; color: var(--text-muted); transition: 0.3s; font-size: 14px; border: none; background: transparent; }
-        .tab-btn.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        
-        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tabs { display: flex; gap: 5px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 10px; border: 1px solid #ddd; cursor: pointer; border-radius: 8px; }
+        .tab-btn.active { background: #0d6efd; color: white; }
+        .tab-content { display: none; }
         .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Перемикачі */
-        .radio-group { display: flex; gap: 12px; margin-bottom: 25px; }
-        .radio-option { flex: 1; }
-        .radio-option input { display: none; }
-        .radio-option label { display: block; padding: 14px; text-align: center; border-radius: 14px; background: #f1f5f9; cursor: pointer; font-weight: 600; transition: all 0.3s; color: var(--text-muted); border: 2px solid transparent; font-size: 15px; }
-        .radio-option input:checked + label { background: rgba(37, 99, 235, 0.1); color: var(--primary); border-color: var(--primary); }
         
-        .checkbox-group { display: flex; align-items: center; margin-bottom: 20px; background: #fff8f8; padding: 15px; border-radius: 14px; border: 1px dashed #fca5a5; transition: 0.3s; }
-        .checkbox-group input { width: 22px; height: 22px; margin-right: 12px; cursor: pointer; }
-        .checkbox-group label { font-size: 14px; cursor: pointer; font-weight: 500; margin: 0; color: #991b1b; }
+        .input-group { margin-bottom: 15px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-top: 5px; }
         
-        /* Поля вводу */
-        .input-group { margin-bottom: 20px; }
-        .input-group label { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; display: block; }
+        .result { margin-top: 20px; padding: 15px; border-left: 4px solid #198754; background: #f8f9fa; display: none; }
+        .highlight { font-weight: bold; color: #dc3545; }
         
-        input[type="number"], select { width: 100%; padding: 16px; border: 2px solid var(--border-color); border-radius: 16px; font-size: 18px; font-weight: 600; box-sizing: border-box; transition: all 0.3s; color: var(--text-main); -webkit-appearance: none; background: transparent; }
-        input[type="number"]:focus, select:focus { border-color: var(--primary); outline: none; background-color: rgba(37, 99, 235, 0.05); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
-        
-        .mixed-input { display: flex; gap: 10px; }
-        .mixed-input input { flex: 2; }
-        .mixed-input select { flex: 1; padding: 14px; font-size: 15px; font-weight: 600; color: var(--primary); border-color: var(--border-color); }
-
-        /* Результати */
-        .result { margin-top: 25px; padding: 25px; background: rgba(226, 232, 240, 0.3); border-radius: 20px; display: none; border: 1px solid var(--border-color); animation: slideUp 0.4s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        .result-row { margin-bottom: 15px; font-size: 15px; }
-        .result-row:last-child { margin-bottom: 0; }
-        .result-label { color: var(--text-muted); display: block; margin-bottom: 4px; font-size: 14px; font-weight: 600; }
-        .result-val { font-weight: 700; font-size: 17px; color: var(--text-main); }
-        
-        .breakdown-box { margin-top: 6px; padding: 10px 12px; border-left: 3px solid var(--primary); background: rgba(255, 255, 255, 0.3); border-radius: 0 8px 8px 0; font-size: 14px; line-height: 1.6; }
-        .breakdown-box span.highlight { font-weight: 700; color: var(--text-main); }
-        
-        .total-taxes { margin-top: 15px; padding-top: 15px; border-top: 2px dashed #cbd5e1; }
-        .total-taxes .result-val { color: var(--danger); font-size: 18px; }
-        .net-highlight { color: var(--success); font-size: 22px; font-weight: 800; display: block; margin-top: 5px; }
-        
-        /* Кнопки */
-        .controls { margin-top: 25px; }
-        .btn { width: 100%; padding: 18px; border: none; border-radius: 16px; font-size: 17px; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-bottom: 12px; -webkit-tap-highlight-color: transparent; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:active { background: var(--primary-hover); transform: scale(0.98); }
-        .btn-success { background: var(--success); color: white; display: none; }
-        .btn-success:active { background: var(--success-hover); transform: scale(0.98); }
-        .btn-reset { background: rgba(226, 232, 240, 0.5); color: var(--text-muted); }
-
-        /* Експорт: лише ховаємо UI, БЕЗ жорстких кольорів */
-        .exporting .controls, .exporting .tabs { display: none !important; }
-        .exporting input, .exporting select { 
-            border-color: transparent !important; 
-            background: transparent !important; 
-            box-shadow: none !important; 
-            pointer-events: none; 
-            -webkit-appearance: none; 
-        }
+        #imgBtn { background: #198754; color: white; padding: 10px; width: 100%; border: none; border-radius: 5px; margin-top: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div id="captureArea">
-    <div class="calculator-container" id="mainContainer">
-        <h2>Фінансовий Оффер</h2>
-        
-        <div class="tabs" id="tabNav">
-            <button class="tab-btn active" onclick="switchTab('tab1')">Реверсивний</button>
-            <button class="tab-btn" onclick="switchTab('tab2')">Ставка + Премія</button>
-        </div>
-
-        <div id="tab1" class="tab-content active">
-            <div class="radio-group">
-                <div class="radio-option">
-                    <input type="radio" id="typeStaff1" name="contractType1" value="staff" checked onchange="toggleDisability('1'); calculateTab1()">
-                    <label for="typeStaff1">Штат (КЗпП)</label>
-                </div>
-                <div class="radio-option">
-                    <input type="radio" id="typeFop1" name="contractType1" value="fop" onchange="toggleDisability('1'); calculateTab1()">
-                    <label for="typeFop1">ФОП (3 гр)</label>
-                </div>
-            </div>
-
-            <div class="checkbox-group" id="disabilityBlock1">
-                <input type="checkbox" id="isDisability1" onchange="calculateTab1()">
-                <label for="isDisability1">Працівник має інвалідність (ЄСВ 8.41%)</label>
-            </div>
-
-            <div class="input-group">
-                <label>Бажана сума на руки (Net), грн</label>
-                <input type="number" id="inNet" inputmode="numeric" oninput="calculateTab1('net')" placeholder="0">
-            </div>
-            <div class="input-group">
-                <label>Нарахована зарплата (Gross), грн</label>
-                <input type="number" id="inGross" inputmode="numeric" oninput="calculateTab1('gross')" placeholder="0">
-            </div>
-            <div class="input-group">
-                <label id="lblTotal1">Повний бюджет компанії (Total Cost), грн</label>
-                <input type="number" id="inTotal" inputmode="numeric" oninput="calculateTab1('total')" placeholder="0">
-            </div>
-            
-            <div class="result" id="resultBox1">
-                <div class="result-row"><span class="result-label" id="lblEmp1">Утримання з працівника:</span><span class="result-val" id="valEmp1">0.00 грн</span><div style="font-size: 13px; color: var(--text-muted);" id="descEmp1"></div></div>
-                <div class="result-row"><span class="result-label" id="lblComp1">Нарахування на компанію:</span><span class="result-val" id="valComp1">0.00 грн</span><div style="font-size: 13px; color: var(--text-muted);" id="descComp1"></div></div>
-                <div class="result-row total-taxes"><span class="result-label" style="color: var(--text-main);">Держава отримує загалом:</span><span class="result-val" id="valAll1">0.00 грн</span></div>
-            </div>
-        </div>
-
-        <div id="tab2" class="tab-content">
-            <div class="radio-group">
-                <div class="radio-option">
-                    <input type="radio" id="typeStaff2" name="contractType2" value="staff" checked onchange="toggleDisability('2'); calculateTab2()">
-                    <label for="typeStaff2">Штат (КЗпП)</label>
-                </div>
-                <div class="radio-option">
-                    <input type="radio" id="typeFop2" name="contractType2" value="fop" onchange="toggleDisability('2'); calculateTab2()">
-                    <label for="typeFop2">ФОП (3 гр)</label>
-                </div>
-            </div>
-
-            <div class="checkbox-group" id="disabilityBlock2">
-                <input type="checkbox" id="isDisability2" onchange="calculateTab2()">
-                <label for="isDisability2">Працівник має інвалідність (ЄСВ 8.41%)</label>
-            </div>
-
-            <div class="input-group">
-                <label>Базова ставка</label>
-                <div class="mixed-input">
-                    <input type="number" id="baseSalary" inputmode="numeric" placeholder="Напр: 20000" oninput="calculateTab2()">
-                    <select id="baseType" onchange="calculateTab2()">
-                        <option value="net">Net (на руки)</option>
-                        <option value="gross">Gross (нарах.)</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="input-group">
-                <label>Відсоток премії (від нарахованої бази), %</label>
-                <input type="number" id="bonusPercent" inputmode="decimal" placeholder="Напр: 15" oninput="calculateTab2()">
-            </div>
-
-            <button class="btn btn-primary" onclick="calculateTab2()">Розрахувати ЗП</button>
-
-            <div class="result" id="resultBox2">
-                <div class="result-row">
-                    <span class="result-label">1. Бухгалтерська деталізація (Gross):</span>
-                    <div class="breakdown-box">
-                        Оклад (нарахований): <span class="highlight" id="resBaseGross2">0.00</span> грн<br>
-                        Премія (<span id="resBonusPctLabel">0</span>%): <span class="highlight" id="resBonusGross2">0.00</span> грн<br>
-                        <strong style="margin-top: 6px; display: inline-block; color: var(--primary);">Всього нараховано: <span id="resGross2">0.00</span> грн</strong>
-                    </div>
-                </div>
-                
-                <div class="result-row"><span class="result-label">2. Повний бюджет компанії (Total Cost):</span><span class="result-val" id="resTotal2">0.00 грн</span></div>
-                <div class="result-row"><span class="result-label">3. До виплати працівнику (Net):</span><span class="net-highlight" id="resNet2">0.00 грн</span></div>
-                
-                <div class="result-row total-taxes"><span class="result-label" style="color: var(--text-main);">Загальна сума податків:</span><span class="result-val" id="resTaxes2">0.00 грн</span></div>
-            </div>
-        </div>
-
-        <div class="controls">
-            <button id="imgBtn" class="btn btn-success" onclick="saveAsImage()">📸 Зберегти Оффер (JPG)</button>
-            <button class="btn btn-reset" onclick="clearAll()">Очистити дані</button>
-        </div>
+<div class="container" id="mainContainer">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(this, 'tab1')">Реверсивний</button>
+        <button class="tab-btn" onclick="switchTab(this, 'tab2')">Ставка+Премія</button>
     </div>
+
+    <div id="tab1" class="tab-content active">
+        <label><input type="checkbox" id="isDisability1" onchange="calculateTab1()"> Інвалідність (8.41% ЄСВ)</label>
+        <div class="input-group">
+            <label>Net (на руки):</label>
+            <input type="number" id="inNet" oninput="calculateTab1('net')">
+        </div>
+        <div class="input-group">
+            <label>Gross (нарах.):</label>
+            <input type="number" id="inGross" oninput="calculateTab1('gross')">
+        </div>
+        <div class="input-group">
+            <label>Total (бюджет):</label>
+            <input type="number" id="inTotal" oninput="calculateTab1('total')">
+        </div>
+        <div id="res1" class="result"></div>
+    </div>
+
+    <div id="tab2" class="tab-content">
+        <label><input type="checkbox" id="isDisability2" onchange="calculateTab2()"> Інвалідність (8.41% ЄСВ)</label>
+        <div class="input-group">
+            <label>Ставка:</label>
+            <input type="number" id="baseSalary" oninput="calculateTab2()">
+            <select id="baseType" onchange="calculateTab2()">
+                <option value="net">Net</option>
+                <option value="gross">Gross</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>Премія (%):</label>
+            <input type="number" id="bonusPercent" oninput="calculateTab2()">
+        </div>
+        <div id="res2" class="result"></div>
+    </div>
+
+    <button id="imgBtn" style="display:none;" onclick="saveAsImage()">📸 Зберегти Оффер (PNG)</button>
 </div>
 
 <script>
     const FIXED_FOP_ESV = 1760;
-    const formatOpt = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
-    
-    let lastSource1 = 'net';
 
-    function switchTab(tabId) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-        
-        document.getElementById(tabId).classList.add('active');
-        event.currentTarget.classList.add('active');
-        
-        document.getElementById('imgBtn').style.display = 'none';
-        document.getElementById('resultBox1').style.display = 'none';
-        document.getElementById('resultBox2').style.display = 'none';
-    }
-
-    function toggleDisability(tabNum) {
-        const isFop = document.getElementById(`typeFop${tabNum}`).checked;
-        const disBlock = document.getElementById(`disabilityBlock${tabNum}`);
-        const lblTotal = document.getElementById(`lblTotal${tabNum}`);
-        
-        if (isFop) {
-            disBlock.style.display = 'none';
-            document.getElementById(`isDisability${tabNum}`).checked = false;
-            if(lblTotal) lblTotal.innerText = "Акт виконаних робіт (Бюджет компанії), грн";
-        } else {
-            disBlock.style.display = 'flex';
-            if(lblTotal) lblTotal.innerText = "Повний бюджет компанії (Total Cost), грн";
-        }
+    function switchTab(btn, id) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        btn.classList.add('active');
     }
 
     function calculateTab1(source) {
-        if (source) lastSource1 = source; else source = lastSource1; 
-
-        const isFop = document.getElementById('typeFop1').checked;
         const isDis = document.getElementById('isDisability1').checked;
-        let inNet = document.getElementById('inNet'), inGross = document.getElementById('inGross'), inTotal = document.getElementById('inTotal');
-        let net = 0, gross = 0, total = 0;
         let esvRate = isDis ? 0.0841 : 0.22;
-
-        let baseVal = parseFloat(source === 'net' ? inNet.value : (source === 'gross' ? inGross.value : inTotal.value)) || 0;
-        if (baseVal === 0) {
-            if(source !== 'net') inNet.value = ""; if(source !== 'gross') inGross.value = ""; if(source !== 'total') inTotal.value = "";
-            document.getElementById('resultBox1').style.display = 'none'; document.getElementById('imgBtn').style.display = 'none';
-            return;
-        }
-
-        if (isFop) {
-            if (source === 'net') { net = baseVal; gross = (net + FIXED_FOP_ESV) / 0.95; total = gross; }
-            else if (source === 'gross' || source === 'total') { gross = baseVal; total = gross; net = gross * 0.95 - FIXED_FOP_ESV; }
-        } else {
-            if (source === 'net') { net = baseVal; gross = net / 0.77; total = gross * (1 + esvRate); }
-            else if (source === 'gross') { gross = baseVal; net = gross * 0.77; total = gross * (1 + esvRate); }
-            else if (source === 'total') { total = baseVal; gross = total / (1 + esvRate); net = gross * 0.77; }
-        }
-
-        if (net < 0) net = 0;
-        if (source !== 'net') inNet.value = net.toFixed(2);
-        if (source !== 'gross') inGross.value = gross.toFixed(2);
-        if (source !== 'total') inTotal.value = total.toFixed(2);
-
-        renderBreakdown1(isFop, esvRate, gross);
-    }
-
-    function renderBreakdown1(isFop, esvRate, gross) {
-        let valEmp = 0, valComp = 0, txtEmp = "", txtComp = "";
-        if (isFop) {
-            valEmp = (gross * 0.05) + FIXED_FOP_ESV;
-            document.getElementById('lblEmp1').innerText = "Податки підрядника (ФОП):";
-            document.getElementById('lblComp1').innerText = "Податки компанії:";
-            txtEmp = `ЄП 5% (${(gross*0.05).toLocaleString('uk-UA', formatOpt)} грн) + ЄСВ (${FIXED_FOP_ESV})`;
-            txtComp = "Відсутні (лише оплата акту).";
-        } else {
-            valEmp = gross * 0.23; valComp = gross * esvRate;
-            document.getElementById('lblEmp1').innerText = "Утримано з працівника (23%):";
-            document.getElementById('lblComp1').innerText = `Нарахування компанії (ЄСВ ${(esvRate*100).toFixed(2).replace('.00', '')}%):`;
-            txtEmp = `ПДФО 18% (${(gross*0.18).toLocaleString('uk-UA', formatOpt)}) + ВЗ 5% (${(gross*0.05).toLocaleString('uk-UA', formatOpt)})`;
-            txtComp = "Сплачується зверху від суми Gross.";
-        }
-        document.getElementById('valEmp1').innerText = valEmp.toLocaleString('uk-UA', formatOpt) + " грн";
-        document.getElementById('descEmp1').innerText = txtEmp;
-        document.getElementById('valComp1').innerText = valComp.toLocaleString('uk-UA', formatOpt) + " грн";
-        document.getElementById('descComp1').innerText = txtComp;
-        document.getElementById('valAll1').innerText = (valEmp + valComp).toLocaleString('uk-UA', formatOpt) + " грн";
+        let base = parseFloat(document.getElementById(source === 'net' ? 'inNet' : (source === 'gross' ? 'inGross' : 'inTotal')).value) || 0;
         
-        document.getElementById('resultBox1').style.display = 'block';
+        let net, gross, total;
+        if (source === 'net') { net = base; gross = net / 0.77; total = gross * (1 + esvRate); }
+        else if (source === 'gross') { gross = base; net = gross * 0.77; total = gross * (1 + esvRate); }
+        else { total = base; gross = total / (1 + esvRate); net = gross * 0.77; }
+
+        document.getElementById('inNet').value = net.toFixed(2);
+        document.getElementById('inGross').value = gross.toFixed(2);
+        document.getElementById('inTotal').value = total.toFixed(2);
+        
+        document.getElementById('res1').innerHTML = `Нараховано: ${gross.toFixed(2)}<br>Податки: ${(gross*0.23).toFixed(2)}`;
+        document.getElementById('res1').style.display = 'block';
         document.getElementById('imgBtn').style.display = 'block';
     }
 
     function calculateTab2() {
-        const isFop = document.getElementById('typeFop2').checked;
         const isDis = document.getElementById('isDisability2').checked;
-        const baseInput = parseFloat(document.getElementById('baseSalary').value) || 0;
-        const baseType = document.getElementById('baseType').value;
-        const bonusPercent = parseFloat(document.getElementById('bonusPercent').value) || 0;
-        
-        if (baseInput === 0) {
-            document.getElementById('resultBox2').style.display = 'none';
-            document.getElementById('imgBtn').style.display = 'none';
-            return;
-        }
-
         let esvRate = isDis ? 0.0841 : 0.22;
-        let baseGross = 0;
-
-        if (isFop) {
-            baseGross = (baseType === 'net') ? ((baseInput + FIXED_FOP_ESV) / 0.95) : baseInput;
-        } else {
-            baseGross = (baseType === 'net') ? (baseInput / 0.77) : baseInput;
-        }
-
-        let bonusGross = baseGross * (bonusPercent / 100);
-        let totalGross = baseGross + bonusGross;
-        let totalNet = 0, totalCost = 0, totalTaxes = 0;
-
-        if (isFop) {
-            totalCost = totalGross;
-            totalNet = (totalGross * 0.95) - FIXED_FOP_ESV;
-            totalTaxes = (totalGross * 0.05) + FIXED_FOP_ESV;
-        } else {
-            totalCost = totalGross * (1 + esvRate);
-            totalNet = totalGross * 0.77;
-            totalTaxes = (totalGross * 0.23) + (totalGross * esvRate);
-        }
-
-        if(totalNet < 0) totalNet = 0;
-
-        document.getElementById('resBaseGross2').innerText = baseGross.toLocaleString('uk-UA', formatOpt);
-        document.getElementById('resBonusPctLabel').innerText = bonusPercent;
-        document.getElementById('resBonusGross2').innerText = bonusGross.toLocaleString('uk-UA', formatOpt);
+        let base = parseFloat(document.getElementById('baseSalary').value) || 0;
+        let bonus = parseFloat(document.getElementById('bonusPercent').value) || 0;
+        let baseGross = document.getElementById('baseType').value === 'net' ? base / 0.77 : base;
         
-        document.getElementById('resGross2').innerText = totalGross.toLocaleString('uk-UA', formatOpt);
-        document.getElementById('resTotal2').innerText = totalCost.toLocaleString('uk-UA', formatOpt) + " грн";
-        document.getElementById('resNet2').innerText = totalNet.toLocaleString('uk-UA', formatOpt) + " грн";
-        document.getElementById('resTaxes2').innerText = totalTaxes.toLocaleString('uk-UA', formatOpt) + " грн";
+        let totalGross = baseGross * (1 + bonus/100);
+        let totalNet = totalGross * 0.77;
+        let totalCost = totalGross * (1 + esvRate);
 
-        document.getElementById('resultBox2').style.display = 'block';
+        document.getElementById('res2').innerHTML = `Gross: ${totalGross.toFixed(2)}<br>Net: ${totalNet.toFixed(2)}<br>Total: ${totalCost.toFixed(2)}`;
+        document.getElementById('res2').style.display = 'block';
         document.getElementById('imgBtn').style.display = 'block';
     }
 
-    function clearAll() {
-        document.querySelectorAll('input[type="number"]').forEach(el => el.value = "");
-        document.querySelectorAll('.result').forEach(el => el.style.display = 'none');
-        document.getElementById('imgBtn').style.display = 'none';
-        lastSource1 = 'net'; 
-    }
-
     function saveAsImage() {
-        const mainContainer = document.getElementById('mainContainer');
-        const imgBtn = document.getElementById('imgBtn');
-        const originalText = imgBtn.innerText;
-        
-        imgBtn.innerText = "⏳ Формування...";
-        mainContainer.classList.add('exporting'); 
-        
-        // Зчитуємо ФАКТИЧНИЙ фон, який малює браузер у цю секунду
-        let actualBg = window.getComputedStyle(mainContainer).backgroundColor;
-        
-        // Підстраховка: якщо браузер віддає прозорий фон, ставимо колір жорстко залежно від теми
-        if (actualBg === 'rgba(0, 0, 0, 0)' || actualBg === 'transparent') {
-            actualBg = window.matchMedia('(prefers-color-scheme: dark)').matches ? '#121212' : '#ffffff';
-        }
-
-        // Затримка збільшена до 300мс, щоб мобільний браузер точно встиг перемалювати екран без кнопок
-        setTimeout(() => {
-            html2canvas(mainContainer, { 
-                scale: 2, 
-                backgroundColor: actualBg, // Використовуємо реальний фон!
-                useCORS: true
-            }).then(canvas => {
-                mainContainer.classList.remove('exporting');
-                imgBtn.innerText = originalText;
-                
-                const link = document.createElement('a');
-                link.download = 'Ogrant_Payroll_Offer.jpg'; // Збереження у JPG форматі
-                link.href = canvas.toDataURL('image/jpeg', 0.95);
-                link.click();
-            }).catch(e => {
-                mainContainer.classList.remove('exporting');
-                imgBtn.innerText = originalText;
-                alert("Помилка при збереженні картинки. Спробуйте ще раз.");
-            });
-        }, 300);
+        html2canvas(document.getElementById('mainContainer')).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'Offer.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
     }
 </script>
-
 </body>
 </html>
