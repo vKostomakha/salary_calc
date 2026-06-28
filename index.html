@@ -6,224 +6,196 @@
     <title>Ogrant Payroll</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        :root {
-            --bg-color: #eef2f7;
-            --card-bg: #ffffff;
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --success: #059669;
-            --success-hover: #047857;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
+        /* БАЗОВИЙ, НАДІЙНИЙ ДИЗАЙН ЗІ СКРИНШОТУ "ЗАРПЛАТНИЙ РОЗРАХУНОК" */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #f8f9fa; 
+            color: #212529; 
+            margin: 0; 
+            padding: 15px; 
+            display: flex; 
+            justify-content: center; 
         }
-
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 15px; display: flex; justify-content: center; }
         
-        #captureArea { width: 100%; max-width: 500px; padding: 0; box-sizing: border-box; }
+        #captureArea { width: 100%; max-width: 450px; background: #f8f9fa; }
         
-        .calculator-container { background: var(--card-bg); padding: 30px 25px; border-radius: 24px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08); width: 100%; box-sizing: border-box; }
+        .calculator-container { 
+            background: #ffffff; 
+            padding: 25px 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+            border: 1px solid #e9ecef;
+        }
         
-        h2 { font-size: 24px; margin-top: 0; margin-bottom: 20px; color: var(--text-main); text-align: center; }
+        h2 { 
+            font-size: 22px; 
+            margin-top: 0; 
+            margin-bottom: 20px; 
+            padding-bottom: 15px;
+            color: #212529; 
+            border-bottom: 2px solid #0d6efd; /* Синя лінія як на скриншоті */
+        }
         
         /* Вкладки */
-        .tabs { display: flex; background: #e2e8f0; border-radius: 14px; padding: 5px; margin-bottom: 25px; }
-        .tab-btn { flex: 1; text-align: center; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; color: var(--text-muted); transition: 0.3s; font-size: 14px; border: none; background: transparent; }
-        .tab-btn.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        
-        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+        .tab-btn { 
+            flex: 1; padding: 10px; text-align: center; font-weight: 600; font-size: 14px;
+            cursor: pointer; border: 1px solid #ced4da; border-radius: 6px; 
+            background: #ffffff; color: #495057; 
+        }
+        .tab-btn.active { background: #e9ecef; color: #212529; border-color: #adb5bd; }
+        .tab-content { display: none; }
         .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Перемикачі */
-        .radio-group { display: flex; gap: 12px; margin-bottom: 25px; }
-        .radio-option { flex: 1; }
-        .radio-option input { display: none; }
-        .radio-option label { display: block; padding: 14px; text-align: center; border-radius: 14px; background: #f1f5f9; cursor: pointer; font-weight: 600; transition: all 0.3s; color: var(--text-muted); border: 2px solid transparent; font-size: 15px; }
-        .radio-option input:checked + label { background: rgba(37, 99, 235, 0.1); color: var(--primary); border-color: var(--primary); }
-        
-        .checkbox-group { display: flex; align-items: center; margin-bottom: 20px; background: #fff8f8; padding: 15px; border-radius: 14px; border: 1px dashed #fca5a5; transition: 0.3s; }
-        .checkbox-group input { width: 22px; height: 22px; margin-right: 12px; cursor: pointer; }
-        .checkbox-group label { font-size: 14px; cursor: pointer; font-weight: 500; margin: 0; color: #991b1b; }
-        
+        /* Перемикачі Штат/ФОП */
+        .type-switch { display: flex; gap: 10px; margin-bottom: 20px; }
+        .type-switch label { 
+            flex: 1; display: flex; align-items: center; justify-content: center; 
+            padding: 10px; border: 1px solid #ced4da; border-radius: 6px; 
+            cursor: pointer; font-weight: 600; font-size: 14px;
+        }
+        .type-switch input[type="radio"] { margin-right: 8px; }
+
+        /* Інвалідність (Блок як на скриншоті) */
+        .disability-box { 
+            background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; 
+            padding: 15px; margin-bottom: 20px; display: flex; align-items: flex-start; 
+        }
+        .disability-box input { margin-top: 3px; margin-right: 12px; transform: scale(1.2); }
+        .disability-box label { font-size: 14px; font-weight: 600; color: #212529; margin: 0; cursor: pointer; }
+        .disability-desc { font-size: 13px; color: #6c757d; margin-top: 4px; font-weight: normal; }
+
         /* Поля вводу */
-        .input-group { margin-bottom: 20px; }
-        .input-group label { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; display: block; }
-        
-        input[type="number"], select { width: 100%; padding: 16px; border: 2px solid var(--border-color); border-radius: 16px; font-size: 18px; font-weight: 600; box-sizing: border-box; transition: all 0.3s; color: var(--text-main); -webkit-appearance: none; background: transparent; }
-        input[type="number"]:focus, select:focus { border-color: var(--primary); outline: none; background-color: rgba(37, 99, 235, 0.05); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
-        
+        .input-group { margin-bottom: 15px; }
+        .input-group label { font-size: 14px; font-weight: 700; color: #212529; margin-bottom: 8px; display: block; }
+        input[type="number"], select { 
+            width: 100%; padding: 12px; border: 1px solid #ced4da; border-radius: 6px; 
+            font-size: 16px; color: #212529; box-sizing: border-box; background: #ffffff;
+        }
         .mixed-input { display: flex; gap: 10px; }
         .mixed-input input { flex: 2; }
-        .mixed-input select { flex: 1; padding: 14px; font-size: 15px; font-weight: 600; color: var(--primary); border-color: var(--border-color); }
+        .mixed-input select { flex: 1; }
 
-        /* Результати */
-        .result { margin-top: 25px; padding: 25px; background: rgba(226, 232, 240, 0.3); border-radius: 20px; display: none; border: 1px solid var(--border-color); animation: slideUp 0.4s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        .result-row { margin-bottom: 15px; font-size: 15px; }
-        .result-row:last-child { margin-bottom: 0; }
-        .result-label { color: var(--text-muted); display: block; margin-bottom: 4px; font-size: 14px; font-weight: 600; }
-        .result-val { font-weight: 700; font-size: 17px; color: var(--text-main); }
-        
-        .breakdown-box { margin-top: 6px; padding: 10px 12px; border-left: 3px solid var(--primary); background: rgba(255, 255, 255, 0.3); border-radius: 0 8px 8px 0; font-size: 14px; line-height: 1.6; }
-        .breakdown-box span.highlight { font-weight: 700; color: var(--text-main); }
-        
-        .total-taxes { margin-top: 15px; padding-top: 15px; border-top: 2px dashed #cbd5e1; }
-        .total-taxes .result-val { color: var(--danger); font-size: 18px; }
-        .net-highlight { color: var(--success); font-size: 22px; font-weight: 800; display: block; margin-top: 5px; }
-        
-        /* Кнопки */
-        .controls { margin-top: 25px; }
-        .btn { width: 100%; padding: 18px; border: none; border-radius: 16px; font-size: 17px; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-bottom: 12px; -webkit-tap-highlight-color: transparent; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:active { background: var(--primary-hover); transform: scale(0.98); }
-        .btn-success { background: var(--success); color: white; display: none; }
-        .btn-success:active { background: var(--success-hover); transform: scale(0.98); }
-        .btn-reset { background: rgba(226, 232, 240, 0.5); color: var(--text-muted); }
-
-        /* ==================================================================== */
-        /* БРОНЬОВАНИЙ ЕКСПОРТ: ПОВНЕ ІГНОРУВАННЯ ТЕМНОЇ ТЕМИ ТЕЛЕФОНУ          */
-        /* ==================================================================== */
-        .exporting, .exporting #mainContainer { background: #ffffff !important; }
-        .exporting .controls, .exporting .tabs { display: none !important; }
-        
-        /* Жорсткі кольори для всього тексту */
-        .exporting * { text-shadow: none !important; }
-        .exporting h2 { color: #0f172a !important; }
-        .exporting label, .exporting .result-label { color: #475569 !important; }
-        .exporting .result-val { color: #0f172a !important; }
-        .exporting .total-taxes .result-val { color: #be123c !important; } /* Червоний */
-        .exporting .net-highlight { color: #047857 !important; } /* Зелений */
-        .exporting .highlight { color: #0f172a !important; font-weight: 800 !important; }
-        .exporting div[style*="color: var(--text-muted)"] { color: #64748b !important; }
-        
-        /* Жорсткі фони для карток результату */
-        .exporting .result { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; }
-        .exporting .breakdown-box { background: #ffffff !important; border-left: 3px solid #2563eb !important; color: #334155 !important; }
-        
-        /* Захист інпутів (вони найбільше вицвітають) */
-        .exporting input, .exporting select { 
-            border-color: transparent !important; 
-            background: transparent !important; 
-            box-shadow: none !important; 
-            pointer-events: none; 
-            -webkit-appearance: none; 
-            color: #1d4ed8 !important; /* Синій колір введених цифр */
-            -webkit-text-fill-color: #1d4ed8 !important; /* Обхід блокування iOS/MIUI */
-            opacity: 1 !important;
-            font-weight: 800 !important;
+        /* РЕЗУЛЬТАТ (Точна копія скриншоту) */
+        .result-container { 
+            margin-top: 25px; padding: 20px; background: #f8f9fa; 
+            border-left: 4px solid #198754; /* Зелена смуга */
+            border-radius: 0 8px 8px 0; display: none; 
         }
+        .res-block { margin-bottom: 15px; font-size: 14px; color: #495057; line-height: 1.5; }
+        .res-block-title { font-weight: 700; color: #212529; margin-bottom: 5px; }
+        .val-red { color: #dc3545; font-weight: 700; }
         
-        /* Захист кнопок вибору */
-        .exporting .radio-option input:checked + label { background: #eff6ff !important; color: #1d4ed8 !important; border-color: #1d4ed8 !important; }
-        .exporting .radio-option label { background: #f1f5f9 !important; color: #64748b !important; border-color: transparent !important; }
-        .exporting .checkbox-group { background: #fff8f8 !important; border-color: #fca5a5 !important; }
-        .exporting .checkbox-group label { color: #991b1b !important; }
+        .divider { border-top: 1px solid #dee2e6; margin: 15px 0; }
+
+        /* Червоний блок податків */
+        .tax-total-box { 
+            background: #fff5f5; border: 1px solid #f8d7da; border-radius: 8px; 
+            padding: 15px; margin-top: 20px; 
+        }
+        .tax-total-title { font-weight: 700; color: #a52a2a; margin-bottom: 10px; font-size: 15px; }
+        .tax-row { font-size: 14px; color: #212529; margin-bottom: 8px; }
+        .tax-divider { border-top: 1px dashed #f5c2c7; margin: 10px 0; }
+        .tax-final { font-weight: 700; color: #212529; font-size: 15px; }
+
+        /* Кнопки збереження */
+        .controls { margin-top: 25px; display: flex; gap: 10px; }
+        .btn { 
+            padding: 14px; border: none; border-radius: 6px; font-size: 15px; 
+            font-weight: 700; cursor: pointer; flex: 1; 
+        }
+        .btn-primary { background: #0d6efd; color: white; width: 100%; margin-bottom: 15px; }
+        .btn-success { background: #198754; color: white; display: none; }
+        .btn-outline { background: transparent; border: 1px solid #ced4da; color: #495057; }
+
+        .exporting .controls, .exporting .tabs { display: none !important; }
+        .exporting input, .exporting select { border-color: transparent !important; background: transparent !important; pointer-events: none; -webkit-appearance: none; }
     </style>
 </head>
 <body>
 
 <div id="captureArea">
     <div class="calculator-container" id="mainContainer">
-        <h2>Фінансовий Оффер</h2>
+        <h2>Зарплатний розрахунок</h2>
         
         <div class="tabs" id="tabNav">
             <button class="tab-btn active" onclick="switchTab('tab1')">Реверсивний</button>
             <button class="tab-btn" onclick="switchTab('tab2')">Ставка + Премія</button>
         </div>
 
+        <!-- ВКЛАДКА 1 -->
         <div id="tab1" class="tab-content active">
-            <div class="radio-group">
-                <div class="radio-option">
-                    <input type="radio" id="typeStaff1" name="contractType1" value="staff" checked onchange="toggleDisability('1'); calculateTab1()">
-                    <label for="typeStaff1">Штат (КЗпП)</label>
-                </div>
-                <div class="radio-option">
-                    <input type="radio" id="typeFop1" name="contractType1" value="fop" onchange="toggleDisability('1'); calculateTab1()">
-                    <label for="typeFop1">ФОП (3 гр)</label>
-                </div>
+            <div class="type-switch">
+                <label><input type="radio" name="type1" value="staff" checked onchange="toggleDisability('1'); calculateTab1()"> Штат (КЗпП)</label>
+                <label><input type="radio" name="type1" value="fop" onchange="toggleDisability('1'); calculateTab1()"> ФОП (3 гр)</label>
             </div>
 
-            <div class="checkbox-group" id="disabilityBlock1">
+            <div class="disability-box" id="disabilityBlock1">
                 <input type="checkbox" id="isDisability1" onchange="calculateTab1()">
-                <label for="isDisability1">Працівник має інвалідність (ЄСВ 8.41%)</label>
+                <div>
+                    <label for="isDisability1">Працівник має інвалідність</label>
+                    <div class="disability-desc">(Знижує ставку ЄСВ з 22% до 8.41%)</div>
+                </div>
             </div>
 
             <div class="input-group">
-                <label>Бажана сума на руки (Net), грн</label>
-                <input type="number" id="inNet" inputmode="numeric" oninput="calculateTab1('net')" placeholder="0">
+                <label>Бажана сума на руки (Net), грн:</label>
+                <input type="number" id="inNet" inputmode="numeric" oninput="calculateTab1('net')">
             </div>
             <div class="input-group">
-                <label>Нарахована зарплата (Gross), грн</label>
-                <input type="number" id="inGross" inputmode="numeric" oninput="calculateTab1('gross')" placeholder="0">
+                <label>Нараховано (Gross), грн:</label>
+                <input type="number" id="inGross" inputmode="numeric" oninput="calculateTab1('gross')">
             </div>
             <div class="input-group">
-                <label id="lblTotal1">Повний бюджет компанії (Total Cost), грн</label>
-                <input type="number" id="inTotal" inputmode="numeric" oninput="calculateTab1('total')" placeholder="0">
+                <label id="lblTotal1">Витрати роботодавця (Total), грн:</label>
+                <input type="number" id="inTotal" inputmode="numeric" oninput="calculateTab1('total')">
             </div>
             
-            <div class="result" id="resultBox1">
-                <div class="result-row"><span class="result-label" id="lblEmp1">Утримання з працівника:</span><span class="result-val" id="valEmp1">0.00 грн</span><div style="font-size: 13px; color: var(--text-muted);" id="descEmp1"></div></div>
-                <div class="result-row"><span class="result-label" id="lblComp1">Нарахування на компанію:</span><span class="result-val" id="valComp1">0.00 грн</span><div style="font-size: 13px; color: var(--text-muted);" id="descComp1"></div></div>
-                <div class="result-row total-taxes"><span class="result-label" style="color: var(--text-main);">Держава отримує загалом:</span><span class="result-val" id="valAll1">0.00 грн</span></div>
+            <div class="result-container" id="resultBox1">
+                <div id="resContent1"></div>
             </div>
         </div>
 
+        <!-- ВКЛАДКА 2 -->
         <div id="tab2" class="tab-content">
-            <div class="radio-group">
-                <div class="radio-option">
-                    <input type="radio" id="typeStaff2" name="contractType2" value="staff" checked onchange="toggleDisability('2'); calculateTab2()">
-                    <label for="typeStaff2">Штат (КЗпП)</label>
-                </div>
-                <div class="radio-option">
-                    <input type="radio" id="typeFop2" name="contractType2" value="fop" onchange="toggleDisability('2'); calculateTab2()">
-                    <label for="typeFop2">ФОП (3 гр)</label>
-                </div>
+            <div class="type-switch">
+                <label><input type="radio" name="type2" value="staff" checked onchange="toggleDisability('2'); calculateTab2()"> Штат (КЗпП)</label>
+                <label><input type="radio" name="type2" value="fop" onchange="toggleDisability('2'); calculateTab2()"> ФОП (3 гр)</label>
             </div>
 
-            <div class="checkbox-group" id="disabilityBlock2">
+            <div class="disability-box" id="disabilityBlock2">
                 <input type="checkbox" id="isDisability2" onchange="calculateTab2()">
-                <label for="isDisability2">Працівник має інвалідність (ЄСВ 8.41%)</label>
+                <div>
+                    <label for="isDisability2">Працівник має інвалідність</label>
+                    <div class="disability-desc">(Знижує ставку ЄСВ з 22% до 8.41%)</div>
+                </div>
             </div>
 
             <div class="input-group">
-                <label>Базова ставка</label>
+                <label>Базова ставка:</label>
                 <div class="mixed-input">
-                    <input type="number" id="baseSalary" inputmode="numeric" placeholder="Напр: 20000" oninput="calculateTab2()">
+                    <input type="number" id="baseSalary" inputmode="numeric" oninput="calculateTab2()">
                     <select id="baseType" onchange="calculateTab2()">
-                        <option value="net">Net (на руки)</option>
-                        <option value="gross">Gross (нарах.)</option>
+                        <option value="net">Net</option>
+                        <option value="gross">Gross</option>
                     </select>
                 </div>
             </div>
-            
             <div class="input-group">
-                <label>Відсоток премії (від нарахованої бази), %</label>
-                <input type="number" id="bonusPercent" inputmode="decimal" placeholder="Напр: 15" oninput="calculateTab2()">
+                <label>Відсоток премії (від Gross), %:</label>
+                <input type="number" id="bonusPercent" inputmode="decimal" oninput="calculateTab2()">
             </div>
 
             <button class="btn btn-primary" onclick="calculateTab2()">Розрахувати ЗП</button>
 
-            <div class="result" id="resultBox2">
-                <div class="result-row">
-                    <span class="result-label">1. Бухгалтерська деталізація (Gross):</span>
-                    <div class="breakdown-box">
-                        Оклад (нарахований): <span class="highlight" id="resBaseGross2">0.00</span> грн<br>
-                        Премія (<span id="resBonusPctLabel">0</span>%): <span class="highlight" id="resBonusGross2">0.00</span> грн<br>
-                        <strong style="margin-top: 6px; display: inline-block; color: var(--primary);">Всього нараховано: <span id="resGross2">0.00</span> грн</strong>
-                    </div>
-                </div>
-                
-                <div class="result-row"><span class="result-label">2. Повний бюджет компанії (Total Cost):</span><span class="result-val" id="resTotal2">0.00 грн</span></div>
-                <div class="result-row"><span class="result-label">3. До виплати працівнику (Net):</span><span class="net-highlight" id="resNet2">0.00 грн</span></div>
-                
-                <div class="result-row total-taxes"><span class="result-label" style="color: var(--text-main);">Загальна сума податків:</span><span class="result-val" id="resTaxes2">0.00 грн</span></div>
+            <div class="result-container" id="resultBox2">
+                <div id="resContent2"></div>
             </div>
         </div>
 
         <div class="controls">
-            <button id="imgBtn" class="btn btn-success" onclick="saveAsImage()">📸 Зберегти Оффер (JPG)</button>
-            <button class="btn btn-reset" onclick="clearAll()">Очистити дані</button>
+            <button id="imgBtn" class="btn btn-success" onclick="saveAsImage()">📸 Зберегти (JPG)</button>
+            <button class="btn btn-outline" onclick="clearAll()">Очистити</button>
         </div>
     </div>
 </div>
@@ -231,45 +203,78 @@
 <script>
     const FIXED_FOP_ESV = 1760;
     const formatOpt = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
-    
     let lastSource1 = 'net';
 
     function switchTab(tabId) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-        
         document.getElementById(tabId).classList.add('active');
         event.currentTarget.classList.add('active');
-        
         document.getElementById('imgBtn').style.display = 'none';
         document.getElementById('resultBox1').style.display = 'none';
         document.getElementById('resultBox2').style.display = 'none';
     }
 
     function toggleDisability(tabNum) {
-        const isFop = document.getElementById(`typeFop${tabNum}`).checked;
+        const isFop = document.querySelector(`input[name="type${tabNum}"]:checked`).value === 'fop';
         const disBlock = document.getElementById(`disabilityBlock${tabNum}`);
         const lblTotal = document.getElementById(`lblTotal${tabNum}`);
         
         if (isFop) {
             disBlock.style.display = 'none';
             document.getElementById(`isDisability${tabNum}`).checked = false;
-            if(lblTotal) lblTotal.innerText = "Акт виконаних робіт (Бюджет компанії), грн";
+            if(lblTotal) lblTotal.innerText = "Акт виконаних робіт (Total), грн:";
         } else {
             disBlock.style.display = 'flex';
-            if(lblTotal) lblTotal.innerText = "Повний бюджет компанії (Total Cost), грн";
+            if(lblTotal) lblTotal.innerText = "Витрати роботодавця (Total), грн:";
         }
+    }
+
+    // Генерація HTML-блоку результату (як на скриншоті)
+    function buildResultHTML(isFop, esvRate, gross, net, total) {
+        let html = '';
+        let taxEmpTotal = 0, taxCompTotal = 0;
+
+        if (isFop) {
+            let ep = gross * 0.05;
+            taxEmpTotal = ep + FIXED_FOP_ESV;
+            taxCompTotal = 0;
+
+            html += `<div class="res-block"><div class="res-block-title">Нараховано за актом (Gross):</div>${gross.toLocaleString('uk-UA', formatOpt)} грн</div>`;
+            html += `<div class="res-block">Податки підрядника (ФОП 3 гр):<br>• ЄП (5%): <span class="val-red">${ep.toLocaleString('uk-UA', formatOpt)}</span> грн<br>• ЄСВ: <span class="val-red">${FIXED_FOP_ESV.toLocaleString('uk-UA', formatOpt)}</span> грн</div>`;
+            html += `<div class="divider"></div>`;
+            html += `<div class="res-block"><div class="res-block-title">Витрати компанії:</div>${total.toLocaleString('uk-UA', formatOpt)} грн<br>Податки на компанію: <span class="val-red">0.00</span> грн</div>`;
+        } else {
+            let pdfo = gross * 0.18;
+            let vz = gross * 0.05;
+            let esv = gross * esvRate;
+            taxEmpTotal = pdfo + vz;
+            taxCompTotal = esv;
+
+            html += `<div class="res-block"><div class="res-block-title">Нараховано (Gross):</div>${gross.toLocaleString('uk-UA', formatOpt)} грн</div>`;
+            html += `<div class="res-block">Утримано 23% податків з працівника:<br>• ПДФО (18%): <span class="val-red">${pdfo.toLocaleString('uk-UA', formatOpt)}</span> грн<br>• ВЗ (5%): <span class="val-red">${vz.toLocaleString('uk-UA', formatOpt)}</span> грн</div>`;
+            html += `<div class="divider"></div>`;
+            html += `<div class="res-block"><div class="res-block-title">Витрати роботодавця:</div>${total.toLocaleString('uk-UA', formatOpt)} грн<br>Нарахування на компанію:<br>• ЄСВ (${(esvRate*100).toFixed(2).replace('.00', '')}%): <span class="val-red">${esv.toLocaleString('uk-UA', formatOpt)}</span> грн</div>`;
+        }
+
+        html += `<div class="tax-total-box">
+                    <div class="tax-total-title">Всього податків:</div>
+                    <div class="tax-row">• З працівника: <span class="val-red">${taxEmpTotal.toLocaleString('uk-UA', formatOpt)}</span> грн</div>
+                    <div class="tax-row">• З компанії: <span class="val-red">${taxCompTotal.toLocaleString('uk-UA', formatOpt)}</span> грн</div>
+                    <div class="tax-divider"></div>
+                    <div class="tax-final">Загалом: <span class="val-red">${(taxEmpTotal + taxCompTotal).toLocaleString('uk-UA', formatOpt)}</span> грн</div>
+                 </div>`;
+        
+        return html;
     }
 
     function calculateTab1(source) {
         if (source) lastSource1 = source; else source = lastSource1; 
-
-        const isFop = document.getElementById('typeFop1').checked;
+        const isFop = document.querySelector('input[name="type1"]:checked').value === 'fop';
         const isDis = document.getElementById('isDisability1').checked;
-        let inNet = document.getElementById('inNet'), inGross = document.getElementById('inGross'), inTotal = document.getElementById('inTotal');
-        let net = 0, gross = 0, total = 0;
         let esvRate = isDis ? 0.0841 : 0.22;
-
+        let inNet = document.getElementById('inNet'), inGross = document.getElementById('inGross'), inTotal = document.getElementById('inTotal');
+        
         let baseVal = parseFloat(source === 'net' ? inNet.value : (source === 'gross' ? inGross.value : inTotal.value)) || 0;
         if (baseVal === 0) {
             if(source !== 'net') inNet.value = ""; if(source !== 'gross') inGross.value = ""; if(source !== 'total') inTotal.value = "";
@@ -277,6 +282,7 @@
             return;
         }
 
+        let net = 0, gross = 0, total = 0;
         if (isFop) {
             if (source === 'net') { net = baseVal; gross = (net + FIXED_FOP_ESV) / 0.95; total = gross; }
             else if (source === 'gross' || source === 'total') { gross = baseVal; total = gross; net = gross * 0.95 - FIXED_FOP_ESV; }
@@ -291,37 +297,16 @@
         if (source !== 'gross') inGross.value = gross.toFixed(2);
         if (source !== 'total') inTotal.value = total.toFixed(2);
 
-        renderBreakdown1(isFop, esvRate, gross);
-    }
-
-    function renderBreakdown1(isFop, esvRate, gross) {
-        let valEmp = 0, valComp = 0, txtEmp = "", txtComp = "";
-        if (isFop) {
-            valEmp = (gross * 0.05) + FIXED_FOP_ESV;
-            document.getElementById('lblEmp1').innerText = "Податки підрядника (ФОП):";
-            document.getElementById('lblComp1').innerText = "Податки компанії:";
-            txtEmp = `ЄП 5% (${(gross*0.05).toLocaleString('uk-UA', formatOpt)} грн) + ЄСВ (${FIXED_FOP_ESV})`;
-            txtComp = "Відсутні (лише оплата акту).";
-        } else {
-            valEmp = gross * 0.23; valComp = gross * esvRate;
-            document.getElementById('lblEmp1').innerText = "Утримано з працівника (23%):";
-            document.getElementById('lblComp1').innerText = `Нарахування компанії (ЄСВ ${(esvRate*100).toFixed(2).replace('.00', '')}%):`;
-            txtEmp = `ПДФО 18% (${(gross*0.18).toLocaleString('uk-UA', formatOpt)}) + ВЗ 5% (${(gross*0.05).toLocaleString('uk-UA', formatOpt)})`;
-            txtComp = "Сплачується зверху від суми Gross.";
-        }
-        document.getElementById('valEmp1').innerText = valEmp.toLocaleString('uk-UA', formatOpt) + " грн";
-        document.getElementById('descEmp1').innerText = txtEmp;
-        document.getElementById('valComp1').innerText = valComp.toLocaleString('uk-UA', formatOpt) + " грн";
-        document.getElementById('descComp1').innerText = txtComp;
-        document.getElementById('valAll1').innerText = (valEmp + valComp).toLocaleString('uk-UA', formatOpt) + " грн";
-        
+        document.getElementById('resContent1').innerHTML = buildResultHTML(isFop, esvRate, gross, net, total);
         document.getElementById('resultBox1').style.display = 'block';
         document.getElementById('imgBtn').style.display = 'block';
     }
 
     function calculateTab2() {
-        const isFop = document.getElementById('typeFop2').checked;
+        const isFop = document.querySelector('input[name="type2"]:checked').value === 'fop';
         const isDis = document.getElementById('isDisability2').checked;
+        let esvRate = isDis ? 0.0841 : 0.22;
+        
         const baseInput = parseFloat(document.getElementById('baseSalary').value) || 0;
         const baseType = document.getElementById('baseType').value;
         const bonusPercent = parseFloat(document.getElementById('bonusPercent').value) || 0;
@@ -332,47 +317,34 @@
             return;
         }
 
-        let esvRate = isDis ? 0.0841 : 0.22;
         let baseGross = 0;
-
-        if (isFop) {
-            baseGross = (baseType === 'net') ? ((baseInput + FIXED_FOP_ESV) / 0.95) : baseInput;
-        } else {
-            baseGross = (baseType === 'net') ? (baseInput / 0.77) : baseInput;
-        }
+        if (isFop) baseGross = (baseType === 'net') ? ((baseInput + FIXED_FOP_ESV) / 0.95) : baseInput;
+        else baseGross = (baseType === 'net') ? (baseInput / 0.77) : baseInput;
 
         let bonusGross = baseGross * (bonusPercent / 100);
         let totalGross = baseGross + bonusGross;
-        let totalNet = 0, totalCost = 0, totalTaxes = 0;
+        let totalNet = 0, totalCost = 0;
 
         if (isFop) {
             totalCost = totalGross;
             totalNet = (totalGross * 0.95) - FIXED_FOP_ESV;
-            totalTaxes = (totalGross * 0.05) + FIXED_FOP_ESV;
         } else {
             totalCost = totalGross * (1 + esvRate);
             totalNet = totalGross * 0.77;
-            totalTaxes = (totalGross * 0.23) + (totalGross * esvRate);
         }
-
         if(totalNet < 0) totalNet = 0;
 
-        document.getElementById('resBaseGross2').innerText = baseGross.toLocaleString('uk-UA', formatOpt);
-        document.getElementById('resBonusPctLabel').innerText = bonusPercent;
-        document.getElementById('resBonusGross2').innerText = bonusGross.toLocaleString('uk-UA', formatOpt);
-        
-        document.getElementById('resGross2').innerText = totalGross.toLocaleString('uk-UA', formatOpt);
-        document.getElementById('resTotal2').innerText = totalCost.toLocaleString('uk-UA', formatOpt) + " грн";
-        document.getElementById('resNet2').innerText = totalNet.toLocaleString('uk-UA', formatOpt) + " грн";
-        document.getElementById('resTaxes2').innerText = totalTaxes.toLocaleString('uk-UA', formatOpt) + " грн";
+        let html = `<div class="res-block"><div class="res-block-title">Деталізація бази:</div>Оклад (Gross): ${baseGross.toLocaleString('uk-UA', formatOpt)} грн<br>Премія (${bonusPercent}%): ${bonusGross.toLocaleString('uk-UA', formatOpt)} грн</div><div class="divider"></div>`;
+        html += buildResultHTML(isFop, esvRate, totalGross, totalNet, totalCost);
 
+        document.getElementById('resContent2').innerHTML = html;
         document.getElementById('resultBox2').style.display = 'block';
         document.getElementById('imgBtn').style.display = 'block';
     }
 
     function clearAll() {
         document.querySelectorAll('input[type="number"]').forEach(el => el.value = "");
-        document.querySelectorAll('.result').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.result-container').forEach(el => el.style.display = 'none');
         document.getElementById('imgBtn').style.display = 'none';
         lastSource1 = 'net'; 
     }
@@ -382,30 +354,19 @@
         const imgBtn = document.getElementById('imgBtn');
         const originalText = imgBtn.innerText;
         
-        imgBtn.innerText = "⏳ Формування...";
+        imgBtn.innerText = "⏳ Обробка...";
         mainContainer.classList.add('exporting'); 
-        
-        // Даємо браузеру більше часу (500мс) на застосування жорстких кольорів 
-        // перед тим, як зробити знімок
+
         setTimeout(() => {
-            html2canvas(mainContainer, { 
-                scale: 2, 
-                backgroundColor: '#ffffff', // Примусово білий фон
-                useCORS: true
-            }).then(canvas => {
+            html2canvas(mainContainer, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => {
                 mainContainer.classList.remove('exporting');
                 imgBtn.innerText = originalText;
-                
                 const link = document.createElement('a');
-                link.download = 'Ogrant_Payroll_Offer.jpg'; 
+                link.download = 'Ogrant_Payroll.jpg'; 
                 link.href = canvas.toDataURL('image/jpeg', 0.95);
                 link.click();
-            }).catch(e => {
-                mainContainer.classList.remove('exporting');
-                imgBtn.innerText = originalText;
-                alert("Помилка при збереженні картинки. Спробуйте ще раз.");
             });
-        }, 500);
+        }, 300);
     }
 </script>
 
