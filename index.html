@@ -6,7 +6,6 @@
     <title>Ogrant Payroll</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* БАЗОВИЙ, НАДІЙНИЙ ДИЗАЙН ЗІ СКРИНШОТУ "ЗАРПЛАТНИЙ РОЗРАХУНОК" */
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             background-color: #f8f9fa; 
@@ -33,7 +32,7 @@
             margin-bottom: 20px; 
             padding-bottom: 15px;
             color: #212529; 
-            border-bottom: 2px solid #0d6efd; /* Синя лінія як на скриншоті */
+            border-bottom: 2px solid #0d6efd; 
         }
         
         /* Вкладки */
@@ -56,7 +55,7 @@
         }
         .type-switch input[type="radio"] { margin-right: 8px; }
 
-        /* Інвалідність (Блок як на скриншоті) */
+        /* Інвалідність */
         .disability-box { 
             background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; 
             padding: 15px; margin-bottom: 20px; display: flex; align-items: flex-start; 
@@ -76,19 +75,45 @@
         .mixed-input input { flex: 2; }
         .mixed-input select { flex: 1; }
 
-        /* РЕЗУЛЬТАТ (Точна копія скриншоту) */
+        /* РЕЗУЛЬТАТ */
         .result-container { 
             margin-top: 25px; padding: 20px; background: #f8f9fa; 
-            border-left: 4px solid #198754; /* Зелена смуга */
+            border-left: 4px solid #198754; 
             border-radius: 0 8px 8px 0; display: none; 
         }
+        
+        /* НОВИЙ БЛОК: Головні показники (Net, Gross, Total) */
+        .main-metrics {
+            background: #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px;
+        }
+        .metric-row {
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 10px; font-size: 14px; border-bottom: 1px dashed #ced4da; padding-bottom: 8px;
+        }
+        .metric-row:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
+        .metric-lbl { font-weight: 600; color: #495057; }
+        .metric-val { font-weight: 700; color: #212529; font-size: 15px; }
+        
+        .metric-net .metric-lbl { color: #198754; font-size: 16px; }
+        .metric-net .metric-val { color: #198754; font-size: 20px; font-weight: 900; }
+        
+        .metric-total .metric-lbl { color: #0d6efd; }
+        .metric-total .metric-val { color: #0d6efd; font-size: 16px; }
+
+        /* Розшифровка премії (Жовтий блок) */
+        .base-detail-box {
+            background: #fff3cd; border: 1px solid #ffe69c; border-radius: 8px; 
+            padding: 12px 15px; margin-bottom: 20px;
+        }
+        .base-detail-box .res-block-title { color: #664d03; margin-bottom: 5px; }
+        .base-detail-box .tax-row { color: #664d03; margin-bottom: 3px; }
+
         .res-block { margin-bottom: 15px; font-size: 14px; color: #495057; line-height: 1.5; }
         .res-block-title { font-weight: 700; color: #212529; margin-bottom: 5px; }
         .val-red { color: #dc3545; font-weight: 700; }
-        
         .divider { border-top: 1px solid #dee2e6; margin: 15px 0; }
 
-        /* Червоний блок податків */
+        /* Податки */
         .tax-total-box { 
             background: #fff5f5; border: 1px solid #f8d7da; border-radius: 8px; 
             padding: 15px; margin-top: 20px; 
@@ -98,12 +123,9 @@
         .tax-divider { border-top: 1px dashed #f5c2c7; margin: 10px 0; }
         .tax-final { font-weight: 700; color: #212529; font-size: 15px; }
 
-        /* Кнопки збереження */
+        /* Кнопки */
         .controls { margin-top: 25px; display: flex; gap: 10px; }
-        .btn { 
-            padding: 14px; border: none; border-radius: 6px; font-size: 15px; 
-            font-weight: 700; cursor: pointer; flex: 1; 
-        }
+        .btn { padding: 14px; border: none; border-radius: 6px; font-size: 15px; font-weight: 700; cursor: pointer; flex: 1; }
         .btn-primary { background: #0d6efd; color: white; width: 100%; margin-bottom: 15px; }
         .btn-success { background: #198754; color: white; display: none; }
         .btn-outline { background: transparent; border: 1px solid #ced4da; color: #495057; }
@@ -230,39 +252,60 @@
         }
     }
 
-    // Генерація HTML-блоку результату (як на скриншоті)
+    // Головна функція рендеру результатів з чітким виділенням Net, Gross, Total
     function buildResultHTML(isFop, esvRate, gross, net, total) {
-        let html = '';
         let taxEmpTotal = 0, taxCompTotal = 0;
+        let ep = 0, pdfo = 0, vz = 0, esv = 0;
 
         if (isFop) {
-            let ep = gross * 0.05;
+            ep = gross * 0.05;
             taxEmpTotal = ep + FIXED_FOP_ESV;
             taxCompTotal = 0;
-
-            html += `<div class="res-block"><div class="res-block-title">Нараховано за актом (Gross):</div>${gross.toLocaleString('uk-UA', formatOpt)} грн</div>`;
-            html += `<div class="res-block">Податки підрядника (ФОП 3 гр):<br>• ЄП (5%): <span class="val-red">${ep.toLocaleString('uk-UA', formatOpt)}</span> грн<br>• ЄСВ: <span class="val-red">${FIXED_FOP_ESV.toLocaleString('uk-UA', formatOpt)}</span> грн</div>`;
-            html += `<div class="divider"></div>`;
-            html += `<div class="res-block"><div class="res-block-title">Витрати компанії:</div>${total.toLocaleString('uk-UA', formatOpt)} грн<br>Податки на компанію: <span class="val-red">0.00</span> грн</div>`;
         } else {
-            let pdfo = gross * 0.18;
-            let vz = gross * 0.05;
-            let esv = gross * esvRate;
+            pdfo = gross * 0.18;
+            vz = gross * 0.05;
+            esv = gross * esvRate;
             taxEmpTotal = pdfo + vz;
             taxCompTotal = esv;
-
-            html += `<div class="res-block"><div class="res-block-title">Нараховано (Gross):</div>${gross.toLocaleString('uk-UA', formatOpt)} грн</div>`;
-            html += `<div class="res-block">Утримано 23% податків з працівника:<br>• ПДФО (18%): <span class="val-red">${pdfo.toLocaleString('uk-UA', formatOpt)}</span> грн<br>• ВЗ (5%): <span class="val-red">${vz.toLocaleString('uk-UA', formatOpt)}</span> грн</div>`;
-            html += `<div class="divider"></div>`;
-            html += `<div class="res-block"><div class="res-block-title">Витрати роботодавця:</div>${total.toLocaleString('uk-UA', formatOpt)} грн<br>Нарахування на компанію:<br>• ЄСВ (${(esvRate*100).toFixed(2).replace('.00', '')}%): <span class="val-red">${esv.toLocaleString('uk-UA', formatOpt)}</span> грн</div>`;
         }
 
+        // 1. Блок головних фінансових показників
+        let html = `
+        <div class="main-metrics">
+            <div class="metric-row">
+                <span class="metric-lbl">Нараховано (Gross):</span>
+                <span class="metric-val">${gross.toLocaleString('uk-UA', formatOpt)} грн</span>
+            </div>
+            <div class="metric-row metric-net">
+                <span class="metric-lbl">До виплати на руки (Net):</span>
+                <span class="metric-val">${net.toLocaleString('uk-UA', formatOpt)} грн</span>
+            </div>
+            <div class="metric-row metric-total">
+                <span class="metric-lbl">Витрати компанії (Total Cost):</span>
+                <span class="metric-val">${total.toLocaleString('uk-UA', formatOpt)} грн</span>
+            </div>
+        </div>
+        <div class="res-block-title" style="margin-bottom: 10px;">Деталізація податків:</div>
+        `;
+
+        // 2. Деталізація податків
+        if (isFop) {
+            html += `<div class="res-block">Податки підрядника (ФОП 3 гр):<br>• ЄП (5%): <span class="val-red">${ep.toLocaleString('uk-UA', formatOpt)}</span> грн<br>• ЄСВ: <span class="val-red">${FIXED_FOP_ESV.toLocaleString('uk-UA', formatOpt)}</span> грн</div>`;
+            html += `<div class="divider"></div>`;
+            html += `<div class="res-block">Податки на компанію: <span class="val-red">0.00</span> грн</div>`;
+        } else {
+            html += `<div class="res-block">Утримано 23% податків з працівника:<br>• ПДФО (18%): <span class="val-red">${pdfo.toLocaleString('uk-UA', formatOpt)}</span> грн<br>• ВЗ (5%): <span class="val-red">${vz.toLocaleString('uk-UA', formatOpt)}</span> грн</div>`;
+            html += `<div class="divider"></div>`;
+            html += `<div class="res-block">Нарахування на компанію:<br>• ЄСВ (${(esvRate*100).toFixed(2).replace('.00', '')}%): <span class="val-red">${esv.toLocaleString('uk-UA', formatOpt)}</span> грн</div>`;
+        }
+
+        // 3. Підсумок по податках
         html += `<div class="tax-total-box">
                     <div class="tax-total-title">Всього податків:</div>
                     <div class="tax-row">• З працівника: <span class="val-red">${taxEmpTotal.toLocaleString('uk-UA', formatOpt)}</span> грн</div>
                     <div class="tax-row">• З компанії: <span class="val-red">${taxCompTotal.toLocaleString('uk-UA', formatOpt)}</span> грн</div>
                     <div class="tax-divider"></div>
-                    <div class="tax-final">Загалом: <span class="val-red">${(taxEmpTotal + taxCompTotal).toLocaleString('uk-UA', formatOpt)}</span> грн</div>
+                    <div class="tax-final">Загалом державі: <span class="val-red">${(taxEmpTotal + taxCompTotal).toLocaleString('uk-UA', formatOpt)}</span> грн</div>
                  </div>`;
         
         return html;
@@ -334,7 +377,13 @@
         }
         if(totalNet < 0) totalNet = 0;
 
-        let html = `<div class="res-block"><div class="res-block-title">Деталізація бази:</div>Оклад (Gross): ${baseGross.toLocaleString('uk-UA', formatOpt)} грн<br>Премія (${bonusPercent}%): ${bonusGross.toLocaleString('uk-UA', formatOpt)} грн</div><div class="divider"></div>`;
+        // Додаємо жовтий блок деталізації розрахунку премії перед основними показниками
+        let html = `<div class="base-detail-box">
+            <div class="res-block-title">Розшифровка нарахування (Gross):</div>
+            <div class="tax-row">• Оклад: <b>${baseGross.toLocaleString('uk-UA', formatOpt)}</b> грн</div>
+            <div class="tax-row">• Премія (${bonusPercent}%): <b>${bonusGross.toLocaleString('uk-UA', formatOpt)}</b> грн</div>
+        </div>`;
+        
         html += buildResultHTML(isFop, esvRate, totalGross, totalNet, totalCost);
 
         document.getElementById('resContent2').innerHTML = html;
