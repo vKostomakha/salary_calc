@@ -95,25 +95,27 @@
     <div class="calculator-container" id="mainContainer">
         <h2>Фінансовий Оффер</h2>
         
+        <!-- Навігація вкладок -->
         <div class="tabs" id="tabNav">
             <button class="tab-btn active" onclick="switchTab('tab1')">Реверсивний</button>
             <button class="tab-btn" onclick="switchTab('tab2')">Ставка + Премія</button>
         </div>
 
+        <!-- ================= ВКЛАДКА 1: РЕВЕРСИВНИЙ ================= -->
         <div id="tab1" class="tab-content active">
             <div class="radio-group">
                 <div class="radio-option">
-                    <input type="radio" id="typeStaff1" name="contractType1" value="staff" checked onchange="toggleDisability('1'); calculateTab1('net')">
+                    <input type="radio" id="typeStaff1" name="contractType1" value="staff" checked onchange="toggleDisability('1'); calculateTab1()">
                     <label for="typeStaff1">Штат (КЗпП)</label>
                 </div>
                 <div class="radio-option">
-                    <input type="radio" id="typeFop1" name="contractType1" value="fop" onchange="toggleDisability('1'); calculateTab1('net')">
+                    <input type="radio" id="typeFop1" name="contractType1" value="fop" onchange="toggleDisability('1'); calculateTab1()">
                     <label for="typeFop1">ФОП (3 гр)</label>
                 </div>
             </div>
 
             <div class="checkbox-group" id="disabilityBlock1">
-                <input type="checkbox" id="isDisability1" onchange="calculateTab1('net')">
+                <input type="checkbox" id="isDisability1" onchange="calculateTab1()">
                 <label for="isDisability1">Працівник має інвалідність (ЄСВ 8.41%)</label>
             </div>
 
@@ -137,28 +139,29 @@
             </div>
         </div>
 
+        <!-- ================= ВКЛАДКА 2: СТАВКА + ПРЕМІЯ ================= -->
         <div id="tab2" class="tab-content">
             <div class="radio-group">
                 <div class="radio-option">
-                    <input type="radio" id="typeStaff2" name="contractType2" value="staff" checked onchange="toggleDisability('2')">
+                    <input type="radio" id="typeStaff2" name="contractType2" value="staff" checked onchange="toggleDisability('2'); calculateTab2()">
                     <label for="typeStaff2">Штат (КЗпП)</label>
                 </div>
                 <div class="radio-option">
-                    <input type="radio" id="typeFop2" name="contractType2" value="fop" onchange="toggleDisability('2')">
+                    <input type="radio" id="typeFop2" name="contractType2" value="fop" onchange="toggleDisability('2'); calculateTab2()">
                     <label for="typeFop2">ФОП (3 гр)</label>
                 </div>
             </div>
 
             <div class="checkbox-group" id="disabilityBlock2">
-                <input type="checkbox" id="isDisability2">
+                <input type="checkbox" id="isDisability2" onchange="calculateTab2()">
                 <label for="isDisability2">Працівник має інвалідність (ЄСВ 8.41%)</label>
             </div>
 
             <div class="input-group">
                 <label>Базова ставка</label>
                 <div class="mixed-input">
-                    <input type="number" id="baseSalary" inputmode="numeric" placeholder="Напр: 20000">
-                    <select id="baseType">
+                    <input type="number" id="baseSalary" inputmode="numeric" placeholder="Напр: 20000" oninput="calculateTab2()">
+                    <select id="baseType" onchange="calculateTab2()">
                         <option value="net">Net (на руки)</option>
                         <option value="gross">Gross (нарах.)</option>
                     </select>
@@ -167,7 +170,7 @@
             
             <div class="input-group">
                 <label>Відсоток премії (від нарахованої бази), %</label>
-                <input type="number" id="bonusPercent" inputmode="decimal" placeholder="Напр: 15">
+                <input type="number" id="bonusPercent" inputmode="decimal" placeholder="Напр: 15" oninput="calculateTab2()">
             </div>
 
             <button class="btn btn-primary" onclick="calculateTab2()">Розрахувати ЗП</button>
@@ -189,6 +192,7 @@
             </div>
         </div>
 
+        <!-- Кнопки управління (Спільні для обох вкладок) -->
         <div class="controls">
             <button id="imgBtn" class="btn btn-success" onclick="saveAsImage()">📸 Зберегти Оффер (PNG)</button>
             <button class="btn btn-reset" onclick="clearAll()">Очистити дані</button>
@@ -199,6 +203,9 @@
 <script>
     const FIXED_FOP_ESV = 1760;
     const formatOpt = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
+    
+    // Глобальна змінна для запам'ятовування останнього активного поля на Вкладці 1
+    let lastSource1 = 'net';
 
     // Логіка перемикання вкладок
     function switchTab(tabId) {
@@ -230,6 +237,13 @@
 
     // ================= ЛОГІКА ВКЛАДКИ 1 (РЕВЕРС) =================
     function calculateTab1(source) {
+        // Оновлюємо або використовуємо останнє джерело вводу
+        if (source) {
+            lastSource1 = source;
+        } else {
+            source = lastSource1; 
+        }
+
         const isFop = document.getElementById('typeFop1').checked;
         const isDis = document.getElementById('isDisability1').checked;
         let inNet = document.getElementById('inNet'), inGross = document.getElementById('inGross'), inTotal = document.getElementById('inTotal');
@@ -293,7 +307,11 @@
         const baseType = document.getElementById('baseType').value;
         const bonusPercent = parseFloat(document.getElementById('bonusPercent').value) || 0;
         
-        if (baseInput === 0) return;
+        if (baseInput === 0) {
+            document.getElementById('resultBox2').style.display = 'none';
+            document.getElementById('imgBtn').style.display = 'none';
+            return;
+        }
 
         let esvRate = isDis ? 0.0841 : 0.22;
         let baseGross = 0;
@@ -341,6 +359,7 @@
         document.querySelectorAll('input[type="number"]').forEach(el => el.value = "");
         document.querySelectorAll('.result').forEach(el => el.style.display = 'none');
         document.getElementById('imgBtn').style.display = 'none';
+        lastSource1 = 'net'; // скидання стану
     }
 
     function saveAsImage() {
