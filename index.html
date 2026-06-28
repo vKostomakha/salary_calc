@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="color-scheme" content="light only">
     <title>Ogrant Payroll</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -84,9 +85,35 @@
         .btn-success:active { background: var(--success-hover); transform: scale(0.98); }
         .btn-reset { background: #f1f5f9; color: var(--text-muted); }
 
-        /* Для скриншоту */
+        /* ЖОРСТКІ ПРАВИЛА ДЛЯ ЕКСПОРТУ КАРТИНКИ (Захист від темних тем) */
+        .exporting { background-color: #ffffff !important; }
         .exporting .controls, .exporting .tabs { display: none !important; }
-        .exporting input, .exporting select { border-color: transparent !important; background: transparent !important; box-shadow: none !important; padding-left: 0 !important; color: var(--primary) !important; pointer-events: none; -webkit-appearance: none; }
+        .exporting h2 { color: #0f172a !important; }
+        .exporting label, .exporting .result-label { color: #475569 !important; }
+        .exporting .result-val, .exporting .highlight { color: #0f172a !important; }
+        
+        .exporting input, .exporting select { 
+            border-color: transparent !important; 
+            background: transparent !important; 
+            box-shadow: none !important; 
+            padding-left: 0 !important; 
+            color: #1d4ed8 !important; /* Насичений синій для введених цифр */
+            font-weight: 800 !important;
+            pointer-events: none; 
+            -webkit-appearance: none; 
+        }
+        
+        .exporting .net-highlight { color: #047857 !important; } /* Насичений зелений */
+        .exporting .total-taxes .result-val { color: #be123c !important; } /* Насичений червоний */
+        .exporting .result { border-color: #e2e8f0 !important; background: #f8fafc !important; }
+        .exporting .breakdown-box { background: #ffffff !important; border-left-color: #2563eb !important; }
+        
+        .exporting .radio-option input:checked + label { 
+            background: #eff6ff !important; 
+            color: #1d4ed8 !important; 
+            border-color: #1d4ed8 !important; 
+        }
+        .exporting .radio-option label { color: #94a3b8 !important; }
     </style>
 </head>
 <body>
@@ -95,13 +122,11 @@
     <div class="calculator-container" id="mainContainer">
         <h2>Фінансовий Оффер</h2>
         
-        <!-- Навігація вкладок -->
         <div class="tabs" id="tabNav">
             <button class="tab-btn active" onclick="switchTab('tab1')">Реверсивний</button>
             <button class="tab-btn" onclick="switchTab('tab2')">Ставка + Премія</button>
         </div>
 
-        <!-- ================= ВКЛАДКА 1: РЕВЕРСИВНИЙ ================= -->
         <div id="tab1" class="tab-content active">
             <div class="radio-group">
                 <div class="radio-option">
@@ -139,7 +164,6 @@
             </div>
         </div>
 
-        <!-- ================= ВКЛАДКА 2: СТАВКА + ПРЕМІЯ ================= -->
         <div id="tab2" class="tab-content">
             <div class="radio-group">
                 <div class="radio-option">
@@ -192,7 +216,6 @@
             </div>
         </div>
 
-        <!-- Кнопки управління (Спільні для обох вкладок) -->
         <div class="controls">
             <button id="imgBtn" class="btn btn-success" onclick="saveAsImage()">📸 Зберегти Оффер (PNG)</button>
             <button class="btn btn-reset" onclick="clearAll()">Очистити дані</button>
@@ -204,10 +227,8 @@
     const FIXED_FOP_ESV = 1760;
     const formatOpt = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
     
-    // Глобальна змінна для запам'ятовування останнього активного поля на Вкладці 1
     let lastSource1 = 'net';
 
-    // Логіка перемикання вкладок
     function switchTab(tabId) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -235,9 +256,7 @@
         }
     }
 
-    // ================= ЛОГІКА ВКЛАДКИ 1 (РЕВЕРС) =================
     function calculateTab1(source) {
-        // Оновлюємо або використовуємо останнє джерело вводу
         if (source) {
             lastSource1 = source;
         } else {
@@ -299,7 +318,6 @@
         document.getElementById('imgBtn').style.display = 'block';
     }
 
-    // ================= ЛОГІКА ВКЛАДКИ 2 (СТАВКА + ПРЕМІЯ) =================
     function calculateTab2() {
         const isFop = document.getElementById('typeFop2').checked;
         const isDis = document.getElementById('isDisability2').checked;
@@ -316,14 +334,12 @@
         let esvRate = isDis ? 0.0841 : 0.22;
         let baseGross = 0;
 
-        // Конвертація введеної бази у Gross для розрахунку премії
         if (isFop) {
             baseGross = (baseType === 'net') ? ((baseInput + FIXED_FOP_ESV) / 0.95) : baseInput;
         } else {
             baseGross = (baseType === 'net') ? (baseInput / 0.77) : baseInput;
         }
 
-        // Розрахунок премії від нарахованого (Gross) окладу
         let bonusGross = baseGross * (bonusPercent / 100);
         let totalGross = baseGross + bonusGross;
         let totalNet = 0, totalCost = 0, totalTaxes = 0;
@@ -340,7 +356,6 @@
 
         if(totalNet < 0) totalNet = 0;
 
-        // Заповнення бухгалтерської деталізації
         document.getElementById('resBaseGross2').innerText = baseGross.toLocaleString('uk-UA', formatOpt);
         document.getElementById('resBonusPctLabel').innerText = bonusPercent;
         document.getElementById('resBonusGross2').innerText = bonusGross.toLocaleString('uk-UA', formatOpt);
@@ -354,12 +369,11 @@
         document.getElementById('imgBtn').style.display = 'block';
     }
 
-    // ================= ЕКСПОРТ ТА ОЧИСТКА =================
     function clearAll() {
         document.querySelectorAll('input[type="number"]').forEach(el => el.value = "");
         document.querySelectorAll('.result').forEach(el => el.style.display = 'none');
         document.getElementById('imgBtn').style.display = 'none';
-        lastSource1 = 'net'; // скидання стану
+        lastSource1 = 'net'; 
     }
 
     function saveAsImage() {
@@ -367,11 +381,15 @@
         const imgBtn = document.getElementById('imgBtn');
         const originalText = imgBtn.innerText;
         
-        imgBtn.innerText = "⏳ Обробка...";
+        imgBtn.innerText = "⏳ Формування...";
         mainContainer.classList.add('exporting'); 
 
         setTimeout(() => {
-            html2canvas(mainContainer, { scale: 2, backgroundColor: "#eef2f7" }).then(canvas => {
+            html2canvas(mainContainer, { 
+                scale: 2, 
+                backgroundColor: "#ffffff", // Примусово білий фон для скриншоту
+                useCORS: true
+            }).then(canvas => {
                 mainContainer.classList.remove('exporting');
                 imgBtn.innerText = originalText;
                 
