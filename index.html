@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>Ogrant Payroll</title>
+    <title>Payroll Calculator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body { 
@@ -35,7 +35,6 @@
             border-bottom: 2px solid #0d6efd; 
         }
         
-        /* Вкладки */
         .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
         .tab-btn { 
             flex: 1; padding: 10px; text-align: center; font-weight: 600; font-size: 14px;
@@ -46,7 +45,6 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* Перемикачі Штат/ФОП */
         .type-switch { display: flex; gap: 10px; margin-bottom: 20px; }
         .type-switch label { 
             flex: 1; display: flex; align-items: center; justify-content: center; 
@@ -55,7 +53,6 @@
         }
         .type-switch input[type="radio"] { margin-right: 8px; }
 
-        /* Інвалідність */
         .disability-box { 
             background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; 
             padding: 15px; margin-bottom: 20px; display: flex; align-items: flex-start; 
@@ -64,7 +61,6 @@
         .disability-box label { font-size: 14px; font-weight: 600; color: #212529; margin: 0; cursor: pointer; }
         .disability-desc { font-size: 13px; color: #6c757d; margin-top: 4px; font-weight: normal; }
 
-        /* Поля вводу */
         .input-group { margin-bottom: 15px; }
         .input-group label { font-size: 14px; font-weight: 700; color: #212529; margin-bottom: 8px; display: block; }
         input[type="number"], select { 
@@ -75,7 +71,6 @@
         .mixed-input input { flex: 2; }
         .mixed-input select { flex: 1; }
 
-        /* РЕЗУЛЬТАТ */
         .result-container { 
             margin-top: 25px; padding: 20px; background: #f8f9fa; 
             border-left: 4px solid #198754; 
@@ -130,6 +125,7 @@
             <button class="tab-btn" onclick="switchTab('tab2')">Ставка + Премія</button>
         </div>
 
+        <!-- ВКЛАДКА 1 -->
         <div id="tab1" class="tab-content active">
             <div class="type-switch">
                 <label><input type="radio" name="type1" value="staff" checked onchange="toggleDisability('1'); calculateTab1()"> Штат (КЗпП)</label>
@@ -162,6 +158,7 @@
             </div>
         </div>
 
+        <!-- ВКЛАДКА 2 -->
         <div id="tab2" class="tab-content">
             <div class="type-switch">
                 <label><input type="radio" name="type2" value="staff" checked onchange="toggleDisability('2'); calculateTab2()"> Штат (КЗпП)</label>
@@ -206,7 +203,7 @@
 </div>
 
 <script>
-    const FIXED_FOP_ESV = 1760;
+    const FIXED_FOP_ESV = 1902.34;
     const formatOpt = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
     let lastSource1 = 'net';
 
@@ -241,12 +238,12 @@
 
         if (isFop) {
             ep = gross * 0.05;
-            vz_fop = gross * 0.01; // Військовий збір для ФОП 3 групи (1%)
+            vz_fop = gross * 0.01; 
             taxEmpTotal = ep + vz_fop + FIXED_FOP_ESV;
             taxCompTotal = 0;
         } else {
             pdfo = gross * 0.18;
-            vz = gross * 0.05; // Звичайний військовий збір (5%)
+            vz = gross * 0.05; 
             esv = gross * esvRate;
             taxEmpTotal = pdfo + vz;
             taxCompTotal = esv;
@@ -307,7 +304,6 @@
 
         let net = 0, gross = 0, total = 0;
         if (isFop) {
-            // Формула для ФОП з урахуванням 1% ВЗ (разом 6% податків з доходу: 100% - 6% = 94%)
             if (source === 'net') { net = baseVal; gross = (net + FIXED_FOP_ESV) / 0.94; total = gross; }
             else if (source === 'gross' || source === 'total') { gross = baseVal; total = gross; net = gross * 0.94 - FIXED_FOP_ESV; }
         } else {
@@ -342,7 +338,6 @@
         }
 
         let baseGross = 0;
-        // Для ФОП: конвертуємо з Net у Gross через коефіцієнт 0.94 (через 1% ВЗ)
         if (isFop) baseGross = (baseType === 'net') ? ((baseInput + FIXED_FOP_ESV) / 0.94) : baseInput;
         else baseGross = (baseType === 'net') ? (baseInput / 0.77) : baseInput;
 
@@ -392,7 +387,7 @@
                 mainContainer.classList.remove('exporting');
                 imgBtn.innerText = originalText;
                 const link = document.createElement('a');
-                link.download = 'Ogrant_Payroll.jpg'; 
+                link.download = 'Salary_Calculation.jpg'; 
                 link.href = canvas.toDataURL('image/jpeg', 0.95);
                 link.click();
             });
