@@ -129,12 +129,8 @@
         .btn-success { background: #10b981; color: white; display: none; }
         .btn-success:active { background: #059669; }
         .btn-outline { background: transparent; border: 1px solid #d1d5db; color: #4b5563; }
-
-        /* Броньований захист для експорту зображення */
-        .exporting .controls, .exporting .tabs, .exporting .info-banner { display: none !important; }
-        .exporting input, .exporting select { border-color: transparent !important; background: transparent !important; pointer-events: none; -webkit-appearance: none; color: #1d4ed8 !important; -webkit-text-fill-color: #1d4ed8 !important; opacity: 1 !important; }
-        .exporting, .exporting #mainContainer { background: #ffffff !important; }
-        .exporting * { text-shadow: none !important; }
+        
+        /* Прибрано всі проблемні класи для експорту. Усе робиться через JS. */
     </style>
 </head>
 <body>
@@ -154,7 +150,7 @@
 
         <div id="tab1" class="tab-content active">
             
-            <div class="info-banner">
+            <div class="info-banner" id="banner1">
                 💡 <b>Як користуватися:</b> Введіть суму в <u>будь-яке одне поле</u> нижче. Калькулятор автоматично вирахує всі інші показники у зворотному порядку.
             </div>
 
@@ -194,7 +190,7 @@
 
         <div id="tab2" class="tab-content">
             
-            <div class="info-banner">
+            <div class="info-banner" id="banner2">
                 💡 <b>Як користуватися:</b> Введіть фіксований оклад та відсоток премії. Система зведе їх разом та покаже фінальний результат на руки та податки.
             </div>
 
@@ -228,14 +224,14 @@
                 <input type="number" id="bonusPercent" inputmode="decimal" placeholder="Напр: 15" oninput="calculateTab2()">
             </div>
 
-            <button class="btn btn-primary" onclick="calculateTab2()">Зробити розрахунок</button>
+            <button class="btn btn-primary" id="calcBtn2" onclick="calculateTab2()">Зробити розрахунок</button>
 
             <div class="result-container" id="resultBox2">
                 <div id="resContent2"></div>
             </div>
         </div>
 
-        <div class="controls">
+        <div class="controls" id="actionControls">
             <button id="imgBtn" class="btn btn-success" onclick="saveAsImage()">💾 Зберегти як Документ</button>
             <button class="btn btn-outline" onclick="clearAll()">Очистити</button>
         </div>
@@ -243,7 +239,6 @@
 </div>
 
 <script>
-    // Актуальні константи на 2026 рік
     const FIXED_FOP_ESV = 1902.34; 
     const formatOpt = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
     let lastSource1 = 'net';
@@ -428,19 +423,50 @@
         const imgBtn = document.getElementById('imgBtn');
         const originalText = imgBtn.innerText;
         
-        imgBtn.innerText = "⏳ Підготовка документа...";
-        mainContainer.classList.add('exporting'); 
+        // 1. Фізично ховаємо всі зайві елементи через JS (замість CSS-класу)
+        document.getElementById('tabNav').style.display = 'none';
+        document.getElementById('actionControls').style.display = 'none';
+        document.getElementById('banner1').style.display = 'none';
+        document.getElementById('banner2').style.display = 'none';
+        
+        const calcBtn2 = document.getElementById('calcBtn2');
+        if(calcBtn2) calcBtn2.style.display = 'none';
 
+        imgBtn.innerText = "⏳ Формування...";
+
+        // 2. Робимо знімок без жодних змін кольорів
         setTimeout(() => {
-            html2canvas(mainContainer, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => {
-                mainContainer.classList.remove('exporting');
+            html2canvas(mainContainer, { 
+                scale: 2, 
+                backgroundColor: "#ffffff",
+                useCORS: true
+            }).then(canvas => {
+                // 3. Повертаємо все як було
+                document.getElementById('tabNav').style.display = 'flex';
+                document.getElementById('actionControls').style.display = 'flex';
+                document.getElementById('banner1').style.display = 'block';
+                document.getElementById('banner2').style.display = 'block';
+                if(calcBtn2) calcBtn2.style.display = 'block';
+                
                 imgBtn.innerText = originalText;
+                
+                // Завантажуємо
                 const link = document.createElement('a');
                 link.download = 'Payroll_Offer.jpg'; 
                 link.href = canvas.toDataURL('image/jpeg', 0.95);
                 link.click();
+            }).catch(e => {
+                // Відновлення в разі помилки
+                document.getElementById('tabNav').style.display = 'flex';
+                document.getElementById('actionControls').style.display = 'flex';
+                document.getElementById('banner1').style.display = 'block';
+                document.getElementById('banner2').style.display = 'block';
+                if(calcBtn2) calcBtn2.style.display = 'block';
+                
+                imgBtn.innerText = originalText;
+                alert("Сталася помилка збереження.");
             });
-        }, 300);
+        }, 100);
     }
 </script>
 
