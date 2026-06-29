@@ -82,14 +82,8 @@
             border-radius: 0 8px 8px 0; display: none; 
         }
         
-        /* НОВИЙ БЛОК: Головні показники (Net, Gross, Total) */
-        .main-metrics {
-            background: #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px;
-        }
-        .metric-row {
-            display: flex; justify-content: space-between; align-items: center; 
-            margin-bottom: 10px; font-size: 14px; border-bottom: 1px dashed #ced4da; padding-bottom: 8px;
-        }
+        .main-metrics { background: #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
+        .metric-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 14px; border-bottom: 1px dashed #ced4da; padding-bottom: 8px; }
         .metric-row:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
         .metric-lbl { font-weight: 600; color: #495057; }
         .metric-val { font-weight: 700; color: #212529; font-size: 15px; }
@@ -100,11 +94,7 @@
         .metric-total .metric-lbl { color: #0d6efd; }
         .metric-total .metric-val { color: #0d6efd; font-size: 16px; }
 
-        /* Розшифровка премії (Жовтий блок) */
-        .base-detail-box {
-            background: #fff3cd; border: 1px solid #ffe69c; border-radius: 8px; 
-            padding: 12px 15px; margin-bottom: 20px;
-        }
+        .base-detail-box { background: #fff3cd; border: 1px solid #ffe69c; border-radius: 8px; padding: 12px 15px; margin-bottom: 20px; }
         .base-detail-box .res-block-title { color: #664d03; margin-bottom: 5px; }
         .base-detail-box .tax-row { color: #664d03; margin-bottom: 3px; }
 
@@ -113,17 +103,12 @@
         .val-red { color: #dc3545; font-weight: 700; }
         .divider { border-top: 1px solid #dee2e6; margin: 15px 0; }
 
-        /* Податки */
-        .tax-total-box { 
-            background: #fff5f5; border: 1px solid #f8d7da; border-radius: 8px; 
-            padding: 15px; margin-top: 20px; 
-        }
+        .tax-total-box { background: #fff5f5; border: 1px solid #f8d7da; border-radius: 8px; padding: 15px; margin-top: 20px; }
         .tax-total-title { font-weight: 700; color: #a52a2a; margin-bottom: 10px; font-size: 15px; }
         .tax-row { font-size: 14px; color: #212529; margin-bottom: 8px; }
         .tax-divider { border-top: 1px dashed #f5c2c7; margin: 10px 0; }
         .tax-final { font-weight: 700; color: #212529; font-size: 15px; }
 
-        /* Кнопки */
         .controls { margin-top: 25px; display: flex; gap: 10px; }
         .btn { padding: 14px; border: none; border-radius: 6px; font-size: 15px; font-weight: 700; cursor: pointer; flex: 1; }
         .btn-primary { background: #0d6efd; color: white; width: 100%; margin-bottom: 15px; }
@@ -145,7 +130,6 @@
             <button class="tab-btn" onclick="switchTab('tab2')">Ставка + Премія</button>
         </div>
 
-        <!-- ВКЛАДКА 1 -->
         <div id="tab1" class="tab-content active">
             <div class="type-switch">
                 <label><input type="radio" name="type1" value="staff" checked onchange="toggleDisability('1'); calculateTab1()"> Штат (КЗпП)</label>
@@ -178,7 +162,6 @@
             </div>
         </div>
 
-        <!-- ВКЛАДКА 2 -->
         <div id="tab2" class="tab-content">
             <div class="type-switch">
                 <label><input type="radio" name="type2" value="staff" checked onchange="toggleDisability('2'); calculateTab2()"> Штат (КЗпП)</label>
@@ -252,24 +235,23 @@
         }
     }
 
-    // Головна функція рендеру результатів з чітким виділенням Net, Gross, Total
     function buildResultHTML(isFop, esvRate, gross, net, total) {
         let taxEmpTotal = 0, taxCompTotal = 0;
-        let ep = 0, pdfo = 0, vz = 0, esv = 0;
+        let ep = 0, vz_fop = 0, pdfo = 0, vz = 0, esv = 0;
 
         if (isFop) {
             ep = gross * 0.05;
-            taxEmpTotal = ep + FIXED_FOP_ESV;
+            vz_fop = gross * 0.01; // Військовий збір для ФОП 3 групи (1%)
+            taxEmpTotal = ep + vz_fop + FIXED_FOP_ESV;
             taxCompTotal = 0;
         } else {
             pdfo = gross * 0.18;
-            vz = gross * 0.05;
+            vz = gross * 0.05; // Звичайний військовий збір (5%)
             esv = gross * esvRate;
             taxEmpTotal = pdfo + vz;
             taxCompTotal = esv;
         }
 
-        // 1. Блок головних фінансових показників
         let html = `
         <div class="main-metrics">
             <div class="metric-row">
@@ -288,9 +270,8 @@
         <div class="res-block-title" style="margin-bottom: 10px;">Деталізація податків:</div>
         `;
 
-        // 2. Деталізація податків
         if (isFop) {
-            html += `<div class="res-block">Податки підрядника (ФОП 3 гр):<br>• ЄП (5%): <span class="val-red">${ep.toLocaleString('uk-UA', formatOpt)}</span> грн<br>• ЄСВ: <span class="val-red">${FIXED_FOP_ESV.toLocaleString('uk-UA', formatOpt)}</span> грн</div>`;
+            html += `<div class="res-block">Податки підрядника (ФОП 3 гр):<br>• ЄП (5%): <span class="val-red">${ep.toLocaleString('uk-UA', formatOpt)}</span> грн<br>• ВЗ (1%): <span class="val-red">${vz_fop.toLocaleString('uk-UA', formatOpt)}</span> грн<br>• ЄСВ: <span class="val-red">${FIXED_FOP_ESV.toLocaleString('uk-UA', formatOpt)}</span> грн</div>`;
             html += `<div class="divider"></div>`;
             html += `<div class="res-block">Податки на компанію: <span class="val-red">0.00</span> грн</div>`;
         } else {
@@ -299,7 +280,6 @@
             html += `<div class="res-block">Нарахування на компанію:<br>• ЄСВ (${(esvRate*100).toFixed(2).replace('.00', '')}%): <span class="val-red">${esv.toLocaleString('uk-UA', formatOpt)}</span> грн</div>`;
         }
 
-        // 3. Підсумок по податках
         html += `<div class="tax-total-box">
                     <div class="tax-total-title">Всього податків:</div>
                     <div class="tax-row">• З працівника: <span class="val-red">${taxEmpTotal.toLocaleString('uk-UA', formatOpt)}</span> грн</div>
@@ -327,8 +307,9 @@
 
         let net = 0, gross = 0, total = 0;
         if (isFop) {
-            if (source === 'net') { net = baseVal; gross = (net + FIXED_FOP_ESV) / 0.95; total = gross; }
-            else if (source === 'gross' || source === 'total') { gross = baseVal; total = gross; net = gross * 0.95 - FIXED_FOP_ESV; }
+            // Формула для ФОП з урахуванням 1% ВЗ (разом 6% податків з доходу: 100% - 6% = 94%)
+            if (source === 'net') { net = baseVal; gross = (net + FIXED_FOP_ESV) / 0.94; total = gross; }
+            else if (source === 'gross' || source === 'total') { gross = baseVal; total = gross; net = gross * 0.94 - FIXED_FOP_ESV; }
         } else {
             if (source === 'net') { net = baseVal; gross = net / 0.77; total = gross * (1 + esvRate); }
             else if (source === 'gross') { gross = baseVal; net = gross * 0.77; total = gross * (1 + esvRate); }
@@ -361,7 +342,8 @@
         }
 
         let baseGross = 0;
-        if (isFop) baseGross = (baseType === 'net') ? ((baseInput + FIXED_FOP_ESV) / 0.95) : baseInput;
+        // Для ФОП: конвертуємо з Net у Gross через коефіцієнт 0.94 (через 1% ВЗ)
+        if (isFop) baseGross = (baseType === 'net') ? ((baseInput + FIXED_FOP_ESV) / 0.94) : baseInput;
         else baseGross = (baseType === 'net') ? (baseInput / 0.77) : baseInput;
 
         let bonusGross = baseGross * (bonusPercent / 100);
@@ -370,14 +352,13 @@
 
         if (isFop) {
             totalCost = totalGross;
-            totalNet = (totalGross * 0.95) - FIXED_FOP_ESV;
+            totalNet = (totalGross * 0.94) - FIXED_FOP_ESV;
         } else {
             totalCost = totalGross * (1 + esvRate);
             totalNet = totalGross * 0.77;
         }
         if(totalNet < 0) totalNet = 0;
 
-        // Додаємо жовтий блок деталізації розрахунку премії перед основними показниками
         let html = `<div class="base-detail-box">
             <div class="res-block-title">Розшифровка нарахування (Gross):</div>
             <div class="tax-row">• Оклад: <b>${baseGross.toLocaleString('uk-UA', formatOpt)}</b> грн</div>
