@@ -9,246 +9,207 @@
         /* Базові стилі */
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background-color: #f3f4f6; 
-            color: #1f2937; 
-            margin: 0; 
-            padding: 20px 10px; 
-            display: flex; 
-            justify-content: center; 
+            background-color: #f3f4f6; color: #1f2937; margin: 0; padding: 20px 10px; display: flex; justify-content: center; 
         }
         
-        #captureArea { width: 100%; max-width: 480px; background: #f3f4f6; }
-        
         .calculator-container { 
-            background: #ffffff; 
-            padding: 30px 25px; 
-            border-radius: 12px; 
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1); 
-            border: 1px solid #e5e7eb;
+            background: #ffffff; padding: 30px 25px; border-radius: 12px; 
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border: 1px solid #e5e7eb; width: 100%; max-width: 480px;
         }
         
         .app-header { text-align: center; margin-bottom: 25px; }
         .app-header h2 { font-size: 22px; margin: 0 0 5px 0; color: #111827; }
         .app-header p { margin: 0; font-size: 13px; color: #6b7280; }
         
-        /* Інформаційний банер */
         .info-banner {
-            background-color: #eff6ff; border-left: 4px solid #3b82f6;
-            padding: 12px 15px; border-radius: 0 8px 8px 0;
-            font-size: 13px; color: #1e3a8a; margin-bottom: 20px; line-height: 1.5;
+            background-color: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 15px; 
+            border-radius: 0 8px 8px 0; font-size: 13px; color: #1e3a8a; margin-bottom: 20px; line-height: 1.5;
         }
 
-        /* Вкладки */
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
         .tab-btn { 
             flex: 1; padding: 12px; text-align: center; font-weight: 600; font-size: 14px;
-            cursor: pointer; border: 1px solid #d1d5db; border-radius: 8px; 
-            background: #f9fafb; color: #4b5563; transition: 0.2s;
+            cursor: pointer; border: 1px solid #d1d5db; border-radius: 8px; background: #f9fafb; color: #4b5563; transition: 0.2s;
         }
-        .tab-btn.active { background: #3b82f6; color: #ffffff; border-color: #3b82f6; box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2); }
+        .tab-btn.active { background: #3b82f6; color: #ffffff; border-color: #3b82f6; }
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Перемикачі Штат/ФОП */
         .type-switch { display: flex; gap: 10px; margin-bottom: 20px; }
         .type-switch label { 
-            flex: 1; display: flex; align-items: center; justify-content: center; 
-            padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; 
-            cursor: pointer; font-weight: 600; font-size: 14px; transition: 0.2s; background: #ffffff;
+            flex: 1; display: flex; align-items: center; justify-content: center; padding: 12px; 
+            border: 1px solid #d1d5db; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; background: #ffffff;
         }
         .type-switch input[type="radio"] { margin-right: 8px; }
         .type-switch input[type="radio"]:checked + span { color: #3b82f6; }
 
-        /* Інвалідність */
         .disability-box { 
-            background: #f9fafb; border: 1px dashed #d1d5db; border-radius: 8px; 
-            padding: 15px; margin-bottom: 25px; display: flex; align-items: flex-start; 
+            background: #f9fafb; border: 1px dashed #d1d5db; border-radius: 8px; padding: 15px; margin-bottom: 25px; display: flex; align-items: flex-start; 
         }
         .disability-box input { margin-top: 2px; margin-right: 12px; transform: scale(1.3); cursor: pointer; }
         .disability-box label { font-size: 14px; font-weight: 600; color: #374151; margin: 0; cursor: pointer; display: block; }
         .disability-desc { font-size: 12px; color: #6b7280; margin-top: 4px; font-weight: normal; }
 
-        /* Поля вводу */
         .input-group { margin-bottom: 20px; }
         .input-group label { font-size: 15px; font-weight: 700; color: #111827; margin-bottom: 4px; display: block; }
         .input-hint { font-size: 12px; color: #6b7280; margin-bottom: 8px; display: block; }
         input[type="number"], select { 
-            width: 100%; padding: 14px; border: 1px solid #d1d5db; border-radius: 8px; 
-            font-size: 18px; color: #111827; box-sizing: border-box; background: #ffffff; font-weight: 600;
-            transition: border-color 0.2s; -webkit-appearance: none;
+            width: 100%; padding: 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 18px; color: #111827; 
+            box-sizing: border-box; background: #ffffff; font-weight: 600; -webkit-appearance: none;
         }
         input[type="number"]:focus, select:focus { border-color: #3b82f6; outline: none; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
-        
         .mixed-input { display: flex; gap: 10px; }
         .mixed-input input { flex: 2; }
         .mixed-input select { flex: 1; font-size: 16px; }
 
-        /* РЕЗУЛЬТАТИ */
         .result-container { 
-            margin-top: 30px; padding: 20px; background: #ffffff; 
-            border: 1px solid #e5e7eb; border-top: 4px solid #10b981; 
-            border-radius: 8px; display: none; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            margin-top: 30px; padding: 20px; background: #ffffff; border: 1px solid #e5e7eb; 
+            border-top: 4px solid #10b981; border-radius: 8px; display: none; 
         }
         
-        /* Головні показники */
         .main-metrics { background: #f8fafc; border-radius: 8px; padding: 15px; margin-bottom: 20px; border: 1px solid #f1f5f9; }
         .metric-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 10px; }
         .metric-row:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
         .metric-lbl { font-weight: 600; color: #475569; }
         .metric-val { font-weight: 700; color: #0f172a; font-size: 16px; }
-        
-        .metric-net .metric-lbl { color: #059669; font-size: 16px; }
-        .metric-net .metric-val { color: #059669; font-size: 22px; font-weight: 900; }
-        
-        .metric-total .metric-lbl { color: #2563eb; }
-        .metric-total .metric-val { color: #2563eb; font-size: 17px; }
+        .metric-net .metric-lbl, .metric-net .metric-val { color: #059669; }
+        .metric-net .metric-val { font-size: 22px; font-weight: 900; }
+        .metric-total .metric-lbl, .metric-total .metric-val { color: #2563eb; }
+        .metric-total .metric-val { font-size: 17px; }
 
-        /* Деталізація */
         .base-detail-box { background: #fef3c7; border: 1px solid #fde047; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
-        .base-detail-box .res-block-title { color: #854d0e; margin-bottom: 8px; }
-        .base-detail-box .tax-row { color: #854d0e; margin-bottom: 4px; font-size: 14px; }
-
+        .base-detail-box .res-block-title, .base-detail-box .tax-row { color: #854d0e; }
         .res-block { margin-bottom: 15px; font-size: 14px; color: #4b5563; line-height: 1.6; }
         .res-block-title { font-weight: 700; color: #111827; margin-bottom: 6px; font-size: 15px; }
         .val-red { color: #dc2626; font-weight: 700; }
         .divider { border-top: 1px solid #e5e7eb; margin: 15px 0; }
 
-        /* Підсумки податків */
         .tax-total-box { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 15px; margin-top: 25px; }
         .tax-total-title { font-weight: 700; color: #991b1b; margin-bottom: 12px; font-size: 15px; }
         .tax-row { font-size: 14px; color: #111827; margin-bottom: 8px; }
         .tax-divider { border-top: 1px dashed #fca5a5; margin: 12px 0; }
         .tax-final { font-weight: 800; color: #111827; font-size: 16px; }
 
-        /* Кнопки */
-        .controls { margin-top: 25px; display: flex; gap: 10px; }
-        .btn { padding: 16px; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; flex: 1; transition: 0.2s; }
+        .controls { margin-top: 25px; display: flex; flex-direction: column; gap: 10px; }
+        .controls-row { display: flex; gap: 10px; }
+        .btn { padding: 14px; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; flex: 1; transition: 0.2s; }
         .btn-primary { background: #3b82f6; color: white; width: 100%; margin-bottom: 15px; }
-        .btn-primary:active { background: #2563eb; }
-        .btn-success { background: #10b981; color: white; display: none; }
-        .btn-success:active { background: #059669; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-clipboard { background: #f59e0b; color: white; }
         .btn-outline { background: transparent; border: 1px solid #d1d5db; color: #4b5563; }
         
-        /* Прибрано всі проблемні класи для експорту. Усе робиться через JS. */
+        .action-buttons { display: none; flex-direction: column; gap: 10px; }
     </style>
 </head>
 <body>
 
-<div id="captureArea">
-    <div class="calculator-container" id="mainContainer">
+<div class="calculator-container">
+    <div class="app-header">
+        <h2>Зарплатний Калькулятор</h2>
+        <p>Розрахунок податків, офферів та бюджету</p>
+    </div>
+    
+    <div class="tabs" id="tabNav">
+        <button class="tab-btn active" onclick="switchTab('tab1')">Калькулятор Офферу</button>
+        <button class="tab-btn" onclick="switchTab('tab2')">Ставка + Премія</button>
+    </div>
+
+    <div id="tab1" class="tab-content active">
+        <div class="info-banner">💡 Введіть суму в <u>будь-яке одне поле</u>. Калькулятор автоматично вирахує всі інші показники у зворотному порядку.</div>
         
-        <div class="app-header">
-            <h2>Зарплатний Калькулятор</h2>
-            <p>Розрахунок податків, офферів та бюджету</p>
+        <div class="type-switch">
+            <label><input type="radio" name="type1" value="staff" checked onchange="toggleDisability('1'); calculateTab1()"> <span>Штат (КЗпП)</span></label>
+            <label><input type="radio" name="type1" value="fop" onchange="toggleDisability('1'); calculateTab1()"> <span>ФОП (3 гр)</span></label>
+        </div>
+
+        <div class="disability-box" id="disabilityBlock1">
+            <input type="checkbox" id="isDisability1" onchange="calculateTab1()">
+            <div><label for="isDisability1">Працівник має інвалідність</label><div class="disability-desc">Законно знижує ставку нарахування ЄСВ для компанії з 22% до 8.41%</div></div>
+        </div>
+
+        <div class="input-group">
+            <label>Сума на руки (Net), грн</label>
+            <span class="input-hint">Фактична сума, яку людина отримує на картку</span>
+            <input type="number" id="inNet" inputmode="numeric" placeholder="Напр: 45000" oninput="calculateTab1('net')">
+        </div>
+        <div class="input-group">
+            <label>Нараховано (Gross), грн</label>
+            <span class="input-hint">Офіційна сума в договорі (база для оподаткування)</span>
+            <input type="number" id="inGross" inputmode="numeric" placeholder="0" oninput="calculateTab1('gross')">
+        </div>
+        <div class="input-group">
+            <label id="lblTotal1">Повний бюджет компанії (Total Cost), грн</label>
+            <span class="input-hint" id="hintTotal1">Повні фінансові витрати бізнесу на утримання працівника</span>
+            <input type="number" id="inTotal" inputmode="numeric" placeholder="0" oninput="calculateTab1('total')">
         </div>
         
-        <div class="tabs" id="tabNav">
-            <button class="tab-btn active" onclick="switchTab('tab1')">Калькулятор Офферу</button>
-            <button class="tab-btn" onclick="switchTab('tab2')">Ставка + Премія</button>
+        <div class="result-container" id="resultBox1">
+            <div id="resContent1"></div>
+        </div>
+    </div>
+
+    <div id="tab2" class="tab-content">
+        <div class="info-banner">💡 Введіть фіксований оклад та відсоток премії. Система зведе їх разом та покаже фінальний результат на руки та податки.</div>
+
+        <div class="type-switch">
+            <label><input type="radio" name="type2" value="staff" checked onchange="toggleDisability('2'); calculateTab2()"> <span>Штат (КЗпП)</span></label>
+            <label><input type="radio" name="type2" value="fop" onchange="toggleDisability('2'); calculateTab2()"> <span>ФОП (3 гр)</span></label>
         </div>
 
-        <div id="tab1" class="tab-content active">
-            
-            <div class="info-banner" id="banner1">
-                💡 <b>Як користуватися:</b> Введіть суму в <u>будь-яке одне поле</u> нижче. Калькулятор автоматично вирахує всі інші показники у зворотному порядку.
-            </div>
-
-            <div class="type-switch">
-                <label><input type="radio" name="type1" value="staff" checked onchange="toggleDisability('1'); calculateTab1()"> <span>Штат (КЗпП)</span></label>
-                <label><input type="radio" name="type1" value="fop" onchange="toggleDisability('1'); calculateTab1()"> <span>ФОП (3 гр)</span></label>
-            </div>
-
-            <div class="disability-box" id="disabilityBlock1">
-                <input type="checkbox" id="isDisability1" onchange="calculateTab1()">
-                <div>
-                    <label for="isDisability1">Працівник має інвалідність</label>
-                    <div class="disability-desc">Законно знижує ставку нарахування ЄСВ для компанії з 22% до 8.41%</div>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label>Сума на руки (Net), грн</label>
-                <span class="input-hint">Фактична сума, яку людина отримує на картку</span>
-                <input type="number" id="inNet" inputmode="numeric" placeholder="Напр: 45000" oninput="calculateTab1('net')">
-            </div>
-            <div class="input-group">
-                <label>Нараховано (Gross), грн</label>
-                <span class="input-hint">Офіційна сума в договорі (база для оподаткування)</span>
-                <input type="number" id="inGross" inputmode="numeric" placeholder="0" oninput="calculateTab1('gross')">
-            </div>
-            <div class="input-group">
-                <label id="lblTotal1">Повний бюджет компанії (Total Cost), грн</label>
-                <span class="input-hint" id="hintTotal1">Повні фінансові витрати бізнесу на утримання працівника</span>
-                <input type="number" id="inTotal" inputmode="numeric" placeholder="0" oninput="calculateTab1('total')">
-            </div>
-            
-            <div class="result-container" id="resultBox1">
-                <div id="resContent1"></div>
-            </div>
+        <div class="disability-box" id="disabilityBlock2">
+            <input type="checkbox" id="isDisability2" onchange="calculateTab2()">
+            <div><label for="isDisability2">Працівник має інвалідність</label><div class="disability-desc">Законно знижує ставку нарахування ЄСВ для компанії з 22% до 8.41%</div></div>
         </div>
 
-        <div id="tab2" class="tab-content">
-            
-            <div class="info-banner" id="banner2">
-                💡 <b>Як користуватися:</b> Введіть фіксований оклад та відсоток премії. Система зведе їх разом та покаже фінальний результат на руки та податки.
-            </div>
-
-            <div class="type-switch">
-                <label><input type="radio" name="type2" value="staff" checked onchange="toggleDisability('2'); calculateTab2()"> <span>Штат (КЗпП)</span></label>
-                <label><input type="radio" name="type2" value="fop" onchange="toggleDisability('2'); calculateTab2()"> <span>ФОП (3 гр)</span></label>
-            </div>
-
-            <div class="disability-box" id="disabilityBlock2">
-                <input type="checkbox" id="isDisability2" onchange="calculateTab2()">
-                <div>
-                    <label for="isDisability2">Працівник має інвалідність</label>
-                    <div class="disability-desc">Законно знижує ставку нарахування ЄСВ для компанії з 22% до 8.41%</div>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label>Фіксований оклад (База)</label>
-                <span class="input-hint">Вкажіть суму та оберіть, чи це сума на руки, чи офіційна</span>
-                <div class="mixed-input">
-                    <input type="number" id="baseSalary" inputmode="numeric" placeholder="Напр: 25000" oninput="calculateTab2()">
-                    <select id="baseType" onchange="calculateTab2()">
-                        <option value="net">Net (на руки)</option>
-                        <option value="gross" selected>Gross (офіц.)</option>
-                    </select>
-                </div>
-            </div>
-            <div class="input-group">
-                <label>Відсоток премії, %</label>
-                <span class="input-hint">Рахується від нарахованого (Gross) окладу</span>
-                <input type="number" id="bonusPercent" inputmode="decimal" placeholder="Напр: 15" oninput="calculateTab2()">
-            </div>
-
-            <button class="btn btn-primary" id="calcBtn2" onclick="calculateTab2()">Зробити розрахунок</button>
-
-            <div class="result-container" id="resultBox2">
-                <div id="resContent2"></div>
+        <div class="input-group">
+            <label>Фіксований оклад (База)</label>
+            <span class="input-hint">Вкажіть суму та оберіть, чи це сума на руки, чи офіційна</span>
+            <div class="mixed-input">
+                <input type="number" id="baseSalary" inputmode="numeric" placeholder="Напр: 25000" oninput="calculateTab2()">
+                <select id="baseType" onchange="calculateTab2()">
+                    <option value="net">Net (на руки)</option>
+                    <option value="gross" selected>Gross (офіц.)</option>
+                </select>
             </div>
         </div>
+        <div class="input-group">
+            <label>Відсоток премії, %</label>
+            <span class="input-hint">Рахується від нарахованого (Gross) окладу</span>
+            <input type="number" id="bonusPercent" inputmode="decimal" placeholder="Напр: 15" oninput="calculateTab2()">
+        </div>
 
-        <div class="controls" id="actionControls">
-            <button id="imgBtn" class="btn btn-success" onclick="saveAsImage()">💾 Зберегти як Документ</button>
+        <button class="btn btn-primary" onclick="calculateTab2()">Зробити розрахунок</button>
+
+        <div class="result-container" id="resultBox2">
+            <div id="resContent2"></div>
+        </div>
+    </div>
+
+    <div class="controls action-buttons" id="actionControls">
+        <button class="btn btn-clipboard" onclick="copyToClipboard()">📋 Скопіювати текст (для Telegram/Viber)</button>
+        <div class="controls-row">
+            <button id="imgBtn" class="btn btn-success" onclick="generateSterileImage()">📸 Зберегти картинку</button>
             <button class="btn btn-outline" onclick="clearAll()">Очистити</button>
         </div>
     </div>
 </div>
 
+<div id="exportZone" style="position: absolute; left: -9999px; top: -9999px;"></div>
+
 <script>
     const FIXED_FOP_ESV = 1902.34; 
     const formatOpt = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
     let lastSource1 = 'net';
+    let globalTextData = ""; // Для буфера обміну
+    let globalExportHtml = ""; // Для стерильного рендеру
 
     function switchTab(tabId) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
         event.currentTarget.classList.add('active');
-        document.getElementById('imgBtn').style.display = 'none';
+        document.getElementById('actionControls').style.display = 'none';
         document.getElementById('resultBox1').style.display = 'none';
         document.getElementById('resultBox2').style.display = 'none';
     }
@@ -275,59 +236,78 @@
         }
     }
 
-    function buildResultHTML(isFop, esvRate, gross, net, total) {
+    function formatNumber(num) {
+        return num.toLocaleString('uk-UA', formatOpt);
+    }
+
+    function buildData(isFop, esvRate, gross, net, total, baseGross = null, bonusGross = null, bonusPercent = null) {
         let taxEmpTotal = 0, taxCompTotal = 0;
         let ep = 0, vz_fop = 0, pdfo = 0, vz = 0, esv = 0;
 
         if (isFop) {
-            ep = gross * 0.05;
-            vz_fop = gross * 0.01; 
-            taxEmpTotal = ep + vz_fop + FIXED_FOP_ESV;
-            taxCompTotal = 0;
+            ep = gross * 0.05; vz_fop = gross * 0.01; 
+            taxEmpTotal = ep + vz_fop + FIXED_FOP_ESV; taxCompTotal = 0;
         } else {
-            pdfo = gross * 0.18;
-            vz = gross * 0.05; 
-            esv = gross * esvRate;
-            taxEmpTotal = pdfo + vz;
-            taxCompTotal = esv;
+            pdfo = gross * 0.18; vz = gross * 0.05; esv = gross * esvRate;
+            taxEmpTotal = pdfo + vz; taxCompTotal = esv;
         }
 
+        // 1. Формування HTML для інтерфейсу екрану
         let html = `
         <div class="main-metrics">
-            <div class="metric-row">
-                <span class="metric-lbl">Нараховано (Gross):</span>
-                <span class="metric-val">${gross.toLocaleString('uk-UA', formatOpt)} грн</span>
-            </div>
-            <div class="metric-row metric-net">
-                <span class="metric-lbl">Виплата на руки (Net):</span>
-                <span class="metric-val">${net.toLocaleString('uk-UA', formatOpt)} грн</span>
-            </div>
-            <div class="metric-row metric-total">
-                <span class="metric-lbl">Бюджет компанії (Total):</span>
-                <span class="metric-val">${total.toLocaleString('uk-UA', formatOpt)} грн</span>
-            </div>
+            <div class="metric-row"><span class="metric-lbl">Нараховано (Gross):</span><span class="metric-val">${formatNumber(gross)} грн</span></div>
+            <div class="metric-row metric-net"><span class="metric-lbl">Виплата на руки (Net):</span><span class="metric-val">${formatNumber(net)} грн</span></div>
+            <div class="metric-row metric-total"><span class="metric-lbl">Бюджет компанії (Total):</span><span class="metric-val">${formatNumber(total)} грн</span></div>
         </div>
-        <div class="res-block-title" style="margin-bottom: 12px; font-size: 16px;">Податкова деталізація:</div>
-        `;
+        <div class="res-block-title" style="margin-bottom: 12px; font-size: 16px;">Податкова деталізація:</div>`;
 
-        if (isFop) {
-            html += `<div class="res-block">Податки підрядника (ФОП 3 група):<br>• Єдиний податок (5%): <span class="val-red">${ep.toLocaleString('uk-UA', formatOpt)}</span> грн<br>• Військовий збір (1%): <span class="val-red">${vz_fop.toLocaleString('uk-UA', formatOpt)}</span> грн<br>• ЄСВ (фіксований): <span class="val-red">${FIXED_FOP_ESV.toLocaleString('uk-UA', formatOpt)}</span> грн</div>`;
-            html += `<div class="divider"></div>`;
-            html += `<div class="res-block">Додаткові податки компанії: <span class="val-red">0.00</span> грн <br><small style="color: #9ca3af;">(Компанія оплачує лише суму акту виконаних робіт)</small></div>`;
-        } else {
-            html += `<div class="res-block">Утримано з працівника (загалом 23%):<br>• ПДФО (18%): <span class="val-red">${pdfo.toLocaleString('uk-UA', formatOpt)}</span> грн<br>• Військовий збір (5%): <span class="val-red">${vz.toLocaleString('uk-UA', formatOpt)}</span> грн</div>`;
-            html += `<div class="divider"></div>`;
-            html += `<div class="res-block">Нарахування на компанію:<br>• ЄСВ (${(esvRate*100).toFixed(2).replace('.00', '')}% від Gross): <span class="val-red">${esv.toLocaleString('uk-UA', formatOpt)}</span> грн</div>`;
+        if(baseGross !== null) {
+            html = `<div class="base-detail-box">
+                <div class="res-block-title">Розшифровка фінальної бази (Gross):</div>
+                <div class="tax-row">• Базовий оклад: <b>${formatNumber(baseGross)}</b> грн</div>
+                <div class="tax-row">• Премія (${bonusPercent}%): <b>${formatNumber(bonusGross)}</b> грн</div>
+            </div>` + html;
         }
 
-        html += `<div class="tax-total-box">
-                    <div class="tax-total-title">Всього відраховано державі:</div>
-                    <div class="tax-row">• Податки з людини: <span class="val-red">${taxEmpTotal.toLocaleString('uk-UA', formatOpt)}</span> грн</div>
-                    <div class="tax-row">• Податки з бізнесу: <span class="val-red">${taxCompTotal.toLocaleString('uk-UA', formatOpt)}</span> грн</div>
-                    <div class="tax-divider"></div>
-                    <div class="tax-final">Загальна сума податків: <span class="val-red">${(taxEmpTotal + taxCompTotal).toLocaleString('uk-UA', formatOpt)}</span> грн</div>
-                 </div>`;
+        if (isFop) {
+            html += `<div class="res-block">Податки підрядника (ФОП 3 група):<br>• ЄП (5%): <span class="val-red">${formatNumber(ep)}</span> грн<br>• ВЗ (1%): <span class="val-red">${formatNumber(vz_fop)}</span> грн<br>• ЄСВ: <span class="val-red">${formatNumber(FIXED_FOP_ESV)}</span> грн</div><div class="divider"></div><div class="res-block">Податки на компанію: <span class="val-red">0.00</span> грн</div>`;
+        } else {
+            html += `<div class="res-block">Утримано з працівника (загалом 23%):<br>• ПДФО (18%): <span class="val-red">${formatNumber(pdfo)}</span> грн<br>• Військовий збір (5%): <span class="val-red">${formatNumber(vz)}</span> грн</div><div class="divider"></div><div class="res-block">Нарахування на компанію:<br>• ЄСВ (${(esvRate*100).toFixed(2).replace('.00', '')}%): <span class="val-red">${formatNumber(esv)}</span> грн</div>`;
+        }
+
+        html += `<div class="tax-total-box"><div class="tax-total-title">Всього відраховано державі:</div><div class="tax-row">• Податки з людини: <span class="val-red">${formatNumber(taxEmpTotal)}</span> грн</div><div class="tax-row">• Податки з бізнесу: <span class="val-red">${formatNumber(taxCompTotal)}</span> грн</div><div class="tax-divider"></div><div class="tax-final">Загальна сума податків: <span class="val-red">${formatNumber(taxEmpTotal + taxCompTotal)}</span> грн</div></div>`;
         
+        // 2. Формування чистого Тексту для Буфера обміну
+        let text = `📊 Фінансовий Оффер\n\n`;
+        text += `💰 На руки (Net): ${formatNumber(net)} грн\n`;
+        text += `📄 Нараховано (Gross): ${formatNumber(gross)} грн\n`;
+        text += `🏢 Витрати компанії (Total): ${formatNumber(total)} грн\n\n`;
+        if(baseGross !== null) {
+            text += `🔹 Оклад (Gross): ${formatNumber(baseGross)} грн\n`;
+            text += `🔹 Премія (${bonusPercent}%): ${formatNumber(bonusGross)} грн\n\n`;
+        }
+        text += `Тип: ${isFop ? 'ФОП (3 група)' : 'Штат (КЗпП)'}\n`;
+        text += `Податки державі: ${formatNumber(taxEmpTotal + taxCompTotal)} грн`;
+        globalTextData = text;
+
+        // 3. Формування Жорсткого HTML для Стерильного Рендеру (без зовнішніх CSS)
+        globalExportHtml = `
+            <div style="background-color: #ffffff; width: 450px; padding: 30px; font-family: sans-serif; color: #000000; box-sizing: border-box; border: 1px solid #e5e7eb; border-top: 5px solid #10b981; border-radius: 8px;">
+                <h2 style="color: #000000; font-size: 24px; margin-top: 0; margin-bottom: 25px; border-bottom: 2px solid #e5e7eb; padding-bottom: 15px;">Деталі Офферу</h2>
+                <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e2e8f0;">
+                    <div style="font-size: 16px; margin-bottom: 10px; color: #333333;">Нараховано (Gross): <strong style="color:#000000; float:right;">${formatNumber(gross)} грн</strong></div>
+                    <div style="font-size: 20px; margin-bottom: 10px; color: #059669; font-weight: bold; border-top: 1px dashed #cbd5e1; padding-top: 10px;">На руки (Net): <strong style="float:right;">${formatNumber(net)} грн</strong></div>
+                    <div style="font-size: 16px; color: #2563eb; border-top: 1px dashed #cbd5e1; padding-top: 10px;">Бюджет компанії (Total): <strong style="float:right;">${formatNumber(total)} грн</strong></div>
+                </div>
+                <div style="background-color: #fef2f2; padding: 15px; border-radius: 8px; border: 1px solid #fca5a5;">
+                    <strong style="color: #991b1b; display: block; margin-bottom: 10px; font-size: 16px;">Всього податків державі: ${formatNumber(taxEmpTotal + taxCompTotal)} грн</strong>
+                    <div style="font-size: 14px; color: #000000;">• З працівника: <b style="color: #dc2626;">${formatNumber(taxEmpTotal)} грн</b></div>
+                    <div style="font-size: 14px; color: #000000; margin-top: 5px;">• З компанії: <b style="color: #dc2626;">${formatNumber(taxCompTotal)} грн</b></div>
+                </div>
+                <div style="margin-top: 20px; font-size: 13px; color: #64748b; text-align: center;">Тип працевлаштування: <b>${isFop ? 'ФОП (3 група)' : 'Штат (КЗпП)'}</b></div>
+            </div>
+        `;
+
         return html;
     }
 
@@ -340,9 +320,7 @@
         
         let baseVal = parseFloat(source === 'net' ? inNet.value : (source === 'gross' ? inGross.value : inTotal.value)) || 0;
         if (baseVal === 0) {
-            if(source !== 'net') inNet.value = ""; if(source !== 'gross') inGross.value = ""; if(source !== 'total') inTotal.value = "";
-            document.getElementById('resultBox1').style.display = 'none'; document.getElementById('imgBtn').style.display = 'none';
-            return;
+            document.getElementById('resultBox1').style.display = 'none'; document.getElementById('actionControls').style.display = 'none'; return;
         }
 
         let net = 0, gross = 0, total = 0;
@@ -360,24 +338,21 @@
         if (source !== 'gross') inGross.value = gross.toFixed(2);
         if (source !== 'total') inTotal.value = total.toFixed(2);
 
-        document.getElementById('resContent1').innerHTML = buildResultHTML(isFop, esvRate, gross, net, total);
+        document.getElementById('resContent1').innerHTML = buildData(isFop, esvRate, gross, net, total);
         document.getElementById('resultBox1').style.display = 'block';
-        document.getElementById('imgBtn').style.display = 'block';
+        document.getElementById('actionControls').style.display = 'flex';
     }
 
     function calculateTab2() {
         const isFop = document.querySelector('input[name="type2"]:checked').value === 'fop';
         const isDis = document.getElementById('isDisability2').checked;
         let esvRate = isDis ? 0.0841 : 0.22;
-        
         const baseInput = parseFloat(document.getElementById('baseSalary').value) || 0;
         const baseType = document.getElementById('baseType').value;
         const bonusPercent = parseFloat(document.getElementById('bonusPercent').value) || 0;
         
         if (baseInput === 0) {
-            document.getElementById('resultBox2').style.display = 'none';
-            document.getElementById('imgBtn').style.display = 'none';
-            return;
+            document.getElementById('resultBox2').style.display = 'none'; document.getElementById('actionControls').style.display = 'none'; return;
         }
 
         let baseGross = 0;
@@ -388,83 +363,48 @@
         let totalGross = baseGross + bonusGross;
         let totalNet = 0, totalCost = 0;
 
-        if (isFop) {
-            totalCost = totalGross;
-            totalNet = (totalGross * 0.94) - FIXED_FOP_ESV;
-        } else {
-            totalCost = totalGross * (1 + esvRate);
-            totalNet = totalGross * 0.77;
-        }
+        if (isFop) { totalCost = totalGross; totalNet = (totalGross * 0.94) - FIXED_FOP_ESV; } 
+        else { totalCost = totalGross * (1 + esvRate); totalNet = totalGross * 0.77; }
         if(totalNet < 0) totalNet = 0;
 
-        let html = `<div class="base-detail-box">
-            <div class="res-block-title">Розшифровка фінальної бази (Gross):</div>
-            <div class="tax-row">• Базовий оклад: <b>${baseGross.toLocaleString('uk-UA', formatOpt)}</b> грн</div>
-            <div class="tax-row">• Премія (${bonusPercent}%): <b>${bonusGross.toLocaleString('uk-UA', formatOpt)}</b> грн</div>
-            <div style="font-size: 12px; margin-top: 8px; color: #a16207;">Саме їх сума використовується для розрахунку всіх податків нижче.</div>
-        </div>`;
-        
-        html += buildResultHTML(isFop, esvRate, totalGross, totalNet, totalCost);
-
-        document.getElementById('resContent2').innerHTML = html;
+        document.getElementById('resContent2').innerHTML = buildData(isFop, esvRate, totalGross, totalNet, totalCost, baseGross, bonusGross, bonusPercent);
         document.getElementById('resultBox2').style.display = 'block';
-        document.getElementById('imgBtn').style.display = 'block';
+        document.getElementById('actionControls').style.display = 'flex';
     }
 
     function clearAll() {
         document.querySelectorAll('input[type="number"]').forEach(el => el.value = "");
         document.querySelectorAll('.result-container').forEach(el => el.style.display = 'none');
-        document.getElementById('imgBtn').style.display = 'none';
+        document.getElementById('actionControls').style.display = 'none';
         lastSource1 = 'net'; 
     }
 
-    function saveAsImage() {
-        const mainContainer = document.getElementById('mainContainer');
-        const imgBtn = document.getElementById('imgBtn');
-        const originalText = imgBtn.innerText;
-        
-        // 1. Фізично ховаємо всі зайві елементи через JS (замість CSS-класу)
-        document.getElementById('tabNav').style.display = 'none';
-        document.getElementById('actionControls').style.display = 'none';
-        document.getElementById('banner1').style.display = 'none';
-        document.getElementById('banner2').style.display = 'none';
-        
-        const calcBtn2 = document.getElementById('calcBtn2');
-        if(calcBtn2) calcBtn2.style.display = 'none';
+    function copyToClipboard() {
+        navigator.clipboard.writeText(globalTextData).then(() => {
+            alert("✅ Оффер успішно скопійовано в буфер обміну! Можете вставляти в Telegram.");
+        }).catch(err => {
+            alert("Помилка копіювання. Спробуйте ще раз.");
+        });
+    }
 
-        imgBtn.innerText = "⏳ Формування...";
+    function generateSterileImage() {
+        const btn = document.getElementById('imgBtn');
+        const originalText = btn.innerText;
+        btn.innerText = "⏳ Формування...";
+        
+        const exportZone = document.getElementById('exportZone');
+        exportZone.innerHTML = globalExportHtml; // Вставляємо жорсткий, незалежний HTML
 
-        // 2. Робимо знімок без жодних змін кольорів
         setTimeout(() => {
-            html2canvas(mainContainer, { 
-                scale: 2, 
-                backgroundColor: "#ffffff",
-                useCORS: true
+            html2canvas(exportZone.firstElementChild, { 
+                scale: 2, backgroundColor: "#ffffff"
             }).then(canvas => {
-                // 3. Повертаємо все як було
-                document.getElementById('tabNav').style.display = 'flex';
-                document.getElementById('actionControls').style.display = 'flex';
-                document.getElementById('banner1').style.display = 'block';
-                document.getElementById('banner2').style.display = 'block';
-                if(calcBtn2) calcBtn2.style.display = 'block';
-                
-                imgBtn.innerText = originalText;
-                
-                // Завантажуємо
+                btn.innerText = originalText;
                 const link = document.createElement('a');
-                link.download = 'Payroll_Offer.jpg'; 
+                link.download = 'Payroll_Offer_Export.jpg'; 
                 link.href = canvas.toDataURL('image/jpeg', 0.95);
                 link.click();
-            }).catch(e => {
-                // Відновлення в разі помилки
-                document.getElementById('tabNav').style.display = 'flex';
-                document.getElementById('actionControls').style.display = 'flex';
-                document.getElementById('banner1').style.display = 'block';
-                document.getElementById('banner2').style.display = 'block';
-                if(calcBtn2) calcBtn2.style.display = 'block';
-                
-                imgBtn.innerText = originalText;
-                alert("Сталася помилка збереження.");
+                exportZone.innerHTML = ""; // Очищаємо після збереження
             });
         }, 100);
     }
